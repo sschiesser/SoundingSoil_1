@@ -59,6 +59,10 @@
 // From module: Delay routines
 #include <delay.h>
 
+// From module: EXTINT - External Interrupt (Callback APIs)
+#include <extint.h>
+#include <extint_callback.h>
+
 // From module: FatFS file system
 #include <diskio.h>
 #include <ff.h>
@@ -83,6 +87,9 @@
 // From module: RTC - Real Time Counter in Calendar Mode (Polled APIs)
 #include <rtc_calendar.h>
 #include <rtc_tamper.h>
+
+// From module: SAM D21/R21/D11/L21/DA1/L22 USB Dual role interface
+#include <usb_dual.h>
 
 // From module: SD/MMC Memory Control Access - Enable
 #include <sd_mmc_mem.h>
@@ -121,6 +128,10 @@
 // From module: SYSTEM - Reset Management for SAM D20/D21/R21/D09/D10/D11/DA/HA
 #include <reset.h>
 
+// From module: Sleep manager - SAMD implementation
+#include <samd/sleepmgr.h>
+#include <sleepmgr.h>
+
 // From module: Standard serial I/O (stdio)
 #include <stdio_serial.h>
 
@@ -129,5 +140,18 @@
 
 // From module: USART - Serial interface- SAM implementation for devices with only USART
 #include <serial.h>
+
+// From module: USB - Universal Serial Bus
+#include <usb.h>
+
+// From module: USB Device MSC (Single Interface Device)
+#include <udi_msc.h>
+
+// From module: USB Device Stack Core (Common API)
+#include <udc.h>
+#include <udd.h>
+
+// From module: USB MSC Protocol
+#include <usb_protocol_msc.h>
 
 #endif // ASF_H

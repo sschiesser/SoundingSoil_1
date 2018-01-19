@@ -4,6 +4,24 @@
 
 src\ASF\common2\components\memory\sd_mmc\sd_mmc.c
 
+src\ASF\common\services\sleepmgr\samd\sleepmgr.c
+
+src\ASF\common\services\usb\class\msc\device\udi_msc.c
+
+src\ASF\common\services\usb\udc\udc.c
+
+src\ASF\sam0\drivers\extint\extint_sam_d_r_h\extint.c
+
+src\ASF\sam0\drivers\usb\stack_interface\usb_device_udd.c
+
+src\ASF\sam0\drivers\usb\stack_interface\usb_dual.c
+
+src\ASF\sam0\drivers\usb\usb_sam_d_r\usb.c
+
+src\ASF\sam0\drivers\extint\extint_callback.c
+
+src\ASF\common\services\usb\class\msc\device\udi_msc_desc.c
+
 src\ASF\sam0\drivers\rtc\rtc_sam_d_r_h\rtc_calendar.c
 
 src\ASF\thirdparty\fatfs\fatfs-port-r0.09\diskio.c

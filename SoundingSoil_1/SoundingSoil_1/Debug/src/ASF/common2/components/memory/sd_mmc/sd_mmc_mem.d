@@ -117,7 +117,19 @@ src/ASF/common2/components/memory/sd_mmc/sd_mmc_mem.d \
  ../src/ASF/common2/components/memory/sd_mmc/sd_mmc.h \
  ../src/ASF/common2/components/memory/sd_mmc/sd_mmc_mem.h \
  ../src/ASF/common/services/storage/ctrl_access/ctrl_access.h \
- ../src/ASF/common2/components/memory/sd_mmc/sd_mmc_mem.h
+ ../src/ASF/common2/components/memory/sd_mmc/sd_mmc_mem.h \
+ ../src/ASF/common/services/usb/class/msc/device/udi_msc.h \
+ ../src/config/conf_usb.h \
+ ../src/ASF/common/services/usb/class/msc/device/udi_msc_conf.h \
+ ../src/ASF/common/services/usb/class/msc/device/udi_msc.h \
+ ../src/ASF/common/services/usb/usb_protocol.h \
+ ../src/ASF/common/services/usb/usb_atmel.h \
+ ../src/ASF/common/services/usb/class/msc/usb_protocol_msc.h \
+ ../src/ASF/common/services/usb/udc/udd.h \
+ ../src/ASF/common/services/usb/udc/udc_desc.h \
+ ../src/ASF/common/services/usb/udc/udi.h \
+ ../src/ASF/common/services/usb/udc/udc_desc.h \
+ ../src/ASF/common/services/usb/udc/udi.h
 
 ../src/config/conf_access.h:
 
@@ -358,3 +370,27 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-no
 ../src/ASF/common/services/storage/ctrl_access/ctrl_access.h:
 
 ../src/ASF/common2/components/memory/sd_mmc/sd_mmc_mem.h:
+
+../src/ASF/common/services/usb/class/msc/device/udi_msc.h:
+
+../src/config/conf_usb.h:
+
+../src/ASF/common/services/usb/class/msc/device/udi_msc_conf.h:
+
+../src/ASF/common/services/usb/class/msc/device/udi_msc.h:
+
+../src/ASF/common/services/usb/usb_protocol.h:
+
+../src/ASF/common/services/usb/usb_atmel.h:
+
+../src/ASF/common/services/usb/class/msc/usb_protocol_msc.h:
+
+../src/ASF/common/services/usb/udc/udd.h:
+
+../src/ASF/common/services/usb/udc/udc_desc.h:
+
+../src/ASF/common/services/usb/udc/udi.h:
+
+../src/ASF/common/services/usb/udc/udc_desc.h:
+
+../src/ASF/common/services/usb/udc/udi.h:
