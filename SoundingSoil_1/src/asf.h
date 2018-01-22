@@ -63,6 +63,12 @@
 #include <extint.h>
 #include <extint_callback.h>
 
+// From module: FatFS file system
+#include <diskio.h>
+#include <ff.h>
+#include <ffconf.h>
+#include <integer.h>
+
 // From module: Generic board support
 #include <board.h>
 
@@ -78,6 +84,10 @@
 // From module: Part identification macros
 #include <parts.h>
 
+// From module: RTC - Real Time Counter in Calendar Mode (Polled APIs)
+#include <rtc_calendar.h>
+#include <rtc_tamper.h>
+
 // From module: SAM D21/R21/D11/L21/DA1/L22 USB Dual role interface
 #include <usb_dual.h>
 
@@ -87,11 +97,19 @@
 // From module: SD/MMC stack on SPI interface
 #include <sd_mmc.h>
 
+// From module: SERCOM Callback API
+#include <sercom.h>
+#include <sercom_interrupt.h>
+
 // From module: SERCOM Polled API
 #include <sercom.h>
 
 // From module: SERCOM SPI - Serial Peripheral Interface (Polled APIs)
 #include <spi.h>
+
+// From module: SERCOM USART - Serial Communications (Callback APIs)
+#include <usart.h>
+#include <usart_interrupt.h>
 
 // From module: SYSTEM - Clock Management for SAMD21/R21/DA/HA
 #include <clock.h>
@@ -115,6 +133,15 @@
 // From module: Sleep manager - SAMD implementation
 #include <samd/sleepmgr.h>
 #include <sleepmgr.h>
+
+// From module: Standard serial I/O (stdio)
+#include <stdio_serial.h>
+
+// From module: Supported ports of FatFS
+#include <diskio.h>
+
+// From module: USART - Serial interface- SAM implementation for devices with only USART
+#include <serial.h>
 
 // From module: USB - Universal Serial Bus
 #include <usb.h>

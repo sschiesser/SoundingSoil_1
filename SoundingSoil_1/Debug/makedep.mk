@@ -4,13 +4,19 @@
 
 src\ASF\common2\components\memory\sd_mmc\sd_mmc.c
 
-src\ASF\common\services\usb\class\msc\device\example\samd21j18a_samd21_xplained_pro\ui.c
-
 src\ASF\common\services\usb\class\msc\device\udi_msc.c
 
 src\ASF\common\services\usb\udc\udc.c
 
 src\ASF\sam0\drivers\extint\extint_sam_d_r_h\extint.c
+
+src\ASF\sam0\drivers\rtc\rtc_sam_d_r_h\rtc_calendar.c
+
+src\ASF\sam0\drivers\sercom\sercom_interrupt.c
+
+src\ASF\sam0\drivers\sercom\usart\usart.c
+
+src\ASF\sam0\drivers\sercom\usart\usart_interrupt.c
 
 src\ASF\sam0\drivers\system\clock\clock_samd21_r21_da_ha1\clock.c
 
@@ -18,9 +24,23 @@ src\ASF\sam0\drivers\usb\stack_interface\usb_device_udd.c
 
 src\ASF\sam0\drivers\usb\stack_interface\usb_dual.c
 
+src\ASF\sam0\utils\stdio\read.c
+
+src\ASF\sam0\utils\stdio\write.c
+
+src\ASF\thirdparty\fatfs\fatfs-port-r0.09\diskio.c
+
+src\ASF\thirdparty\fatfs\fatfs-port-r0.09\sam0\fattime_rtc.c
+
+src\ASF\thirdparty\fatfs\fatfs-r0.09\src\ff.c
+
+src\ASF\thirdparty\fatfs\fatfs-r0.09\src\option\ccsbcs.c
+
 src\main.c
 
 src\memories_initialization_samd.c
+
+src\ui.c
 
 src\ASF\sam0\drivers\usb\usb_sam_d_r\usb.c
 

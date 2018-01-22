@@ -47,6 +47,56 @@
 #ifndef _UI_H_
 #define _UI_H_
 
+//#define UI_LED_ACTIVE			false
+//#define UI_LED_INACTIVE			!UI_LED_ACTIVE
+//#define UI_BUT_ACTIVE			false
+//#define UI_BUT_INACTIVE			!UI_BUT_ACTIVE
+//
+///* LED definitions */
+//#define UI_LED_1_NAME			"LED1"
+//#define UI_LED_1_PIN			PIN_PA12
+//#define UI_LED_1_ACTIVE			UI_LED_ACTIVE
+//#define UI_LED_1_INACTIVE		UI_LED_INACTIVE
+//
+//#define UI_LED_2_NAME			"LED2"
+//#define UI_LED_2_PIN			PIN_PA13
+//#define UI_LED_2_ACTIVE			UI_LED_ACTIVE
+//#define UI_LED_2_INACTIVE		UI_LED_INACTIVE
+//
+//#define UI_LED_3_NAME			"LED3"
+//#define UI_LED_3_PIN			PIN_PA15
+//#define UI_LED_3_ACTIVE			UI_LED_ACTIVE
+//#define UI_LED_3_INACTIVE		UI_LED_INACTIVE
+//
+///* Buttons definitions */
+//#define UI_BUT_1_NAME			"SW1"
+//#define UI_BUT_1_PIN			PIN_PA28
+//#define UI_BUT_1_ACTIVE			UI_BUT_ACTIVE
+//#define UI_BUT_1_INACTIVE		UI_BUT_INACTIVE
+//#define UI_BUT_1_EIC_PIN		PIN_PA28A_EIC_EXTINT8
+//#define UI_BUT_1_MUX			MUX_PA28A_EIC_EXTINT8
+//#define UI_BUT_1_PINMUX			PINMUX_PA28A_EIC_EXTINT8
+//#define UI_BUT_1_EIC_LINE		8
+//
+//#define UI_BUT_2_NAME			"SW2"
+//#define UI_BUT_2_PIN			PIN_PA02
+//#define UI_BUT_2_ACTIVE			UI_BUT_ACTIVE
+//#define UI_BUT_2_INACTIVE		UI_BUT_INACTIVE
+//#define UI_BUT_2_EIC_PIN		PIN_PA02A_EIC_EXTINT2
+//#define UI_BUT_2_MUX			MUX_PA02A_EIC_EXTINT2
+//#define UI_BUT_2_PINMUX			PINMUX_PA02A_EIC_EXTINT2
+//#define UI_BUT_2_EIC_LINE		2
+//
+//#define UI_BUT_3_NAME			"SW3"
+//#define UI_BUT_3_PIN			PIN_PA03
+//#define UI_BUT_3_ACTIVE			UI_BUT_ACTIVE
+//#define UI_BUT_3_INACTIVE		UI_BUT_INACTIVE
+//#define UI_BUT_3_EIC_PIN		PIN_PA03A_EIC_EXTINT3
+//#define UI_BUT_3_MUX			MUX_PA03A_EIC_EXTINT3
+//#define UI_BUT_3_PINMUX			PINMUX_PA03A_EIC_EXTINT3
+//#define UI_BUT_3_EIC_LINE		3
+
+
 //! \brief Initializes the user interface
 void ui_init(void);
 

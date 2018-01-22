@@ -120,6 +120,13 @@ src/ASF/common2/components/memory/sd_mmc/sd_mmc.d \
  ../src/ASF/sam0/drivers/system/pinmux/pinmux.h \
  ../src/ASF/sam0/drivers/extint/extint_callback.h \
  ../src/ASF/sam0/drivers/extint/extint_callback.h \
+ ../src/ASF/thirdparty/fatfs/fatfs-r0.09/src/diskio.h \
+ ../src/ASF/thirdparty/fatfs/fatfs-r0.09/src/integer.h \
+ ../src/ASF/thirdparty/fatfs/fatfs-r0.09/src/ff.h \
+ ../src/ASF/thirdparty/fatfs/fatfs-r0.09/src/ffconf.h \
+ ../src/config/conf_fatfs.h \
+ ../src/ASF/thirdparty/fatfs/fatfs-r0.09/src/ffconf.h \
+ ../src/ASF/thirdparty/fatfs/fatfs-r0.09/src/integer.h \
  ../src/ASF/common/boards/board.h \
  ../src/ASF/sam0/boards/samd21_xplained_pro/samd21_xplained_pro.h \
  ../src/config/conf_board.h \
@@ -127,6 +134,8 @@ src/ASF/common2/components/memory/sd_mmc/sd_mmc.d \
  ../src/config/conf_access.h ../src/ui.h \
  ../src/ASF/common2/components/memory/sd_mmc/sd_mmc_mem.h \
  ../src/ASF/sam0/drivers/port/port.h \
+ ../src/ASF/sam0/drivers/rtc/rtc_calendar.h ../src/config/conf_clocks.h \
+ ../src/ASF/sam0/drivers/rtc/rtc_tamper.h \
  ../src/ASF/sam0/drivers/usb/stack_interface/usb_dual.h \
  ../src/ASF/common2/components/memory/sd_mmc/sd_mmc.h \
  ../src/config/conf_sd_mmc.h ../src/ASF/sam0/drivers/sercom/sercom.h \
@@ -136,15 +145,22 @@ src/ASF/common2/components/memory/sd_mmc/sd_mmc.d \
  ../src/ASF/sam0/drivers/system/interrupt/system_interrupt.h \
  ../src/ASF/sam0/drivers/system/interrupt/system_interrupt_samd21/system_interrupt_features.h \
  ../src/ASF/sam0/drivers/sercom/sercom_pinout.h \
+ ../src/ASF/sam0/drivers/sercom/sercom_interrupt.h \
+ ../src/ASF/sam0/drivers/sercom/sercom.h \
  ../src/ASF/sam0/drivers/sercom/spi/spi.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\string.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\xlocale.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\string.h \
- ../src/config/conf_spi.h \
+ ../src/config/conf_spi.h ../src/ASF/sam0/drivers/sercom/usart/usart.h \
+ ../src/ASF/sam0/drivers/sercom/usart/usart_interrupt.h \
+ ../src/ASF/sam0/drivers/sercom/usart/usart.h \
  ../src/ASF/common/services/sleepmgr/samd/sleepmgr.h \
  ../src/config/conf_sleepmgr.h \
  ../src/ASF/common/services/sleepmgr/sleepmgr.h \
  ../src/ASF/common/services/sleepmgr/samd/sleepmgr.h \
+ ../src/ASF/sam0/utils/stdio/stdio_serial/stdio_serial.h \
+ ../src/ASF/common/services/serial/serial.h \
+ ../src/ASF/common/services/serial/sam0_usart/usart_serial.h \
  ../src/ASF/sam0/drivers/usb/usb.h \
  ../src/ASF/common/services/usb/class/msc/device/udi_msc.h \
  ../src/config/conf_usb.h \
@@ -406,6 +422,20 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-no
 
 ../src/ASF/sam0/drivers/extint/extint_callback.h:
 
+../src/ASF/thirdparty/fatfs/fatfs-r0.09/src/diskio.h:
+
+../src/ASF/thirdparty/fatfs/fatfs-r0.09/src/integer.h:
+
+../src/ASF/thirdparty/fatfs/fatfs-r0.09/src/ff.h:
+
+../src/ASF/thirdparty/fatfs/fatfs-r0.09/src/ffconf.h:
+
+../src/config/conf_fatfs.h:
+
+../src/ASF/thirdparty/fatfs/fatfs-r0.09/src/ffconf.h:
+
+../src/ASF/thirdparty/fatfs/fatfs-r0.09/src/integer.h:
+
 ../src/ASF/common/boards/board.h:
 
 ../src/ASF/sam0/boards/samd21_xplained_pro/samd21_xplained_pro.h:
@@ -421,6 +451,12 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-no
 ../src/ASF/common2/components/memory/sd_mmc/sd_mmc_mem.h:
 
 ../src/ASF/sam0/drivers/port/port.h:
+
+../src/ASF/sam0/drivers/rtc/rtc_calendar.h:
+
+../src/config/conf_clocks.h:
+
+../src/ASF/sam0/drivers/rtc/rtc_tamper.h:
 
 ../src/ASF/sam0/drivers/usb/stack_interface/usb_dual.h:
 
@@ -442,6 +478,10 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-no
 
 ../src/ASF/sam0/drivers/sercom/sercom_pinout.h:
 
+../src/ASF/sam0/drivers/sercom/sercom_interrupt.h:
+
+../src/ASF/sam0/drivers/sercom/sercom.h:
+
 ../src/ASF/sam0/drivers/sercom/spi/spi.h:
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\string.h:
@@ -452,6 +492,12 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-no
 
 ../src/config/conf_spi.h:
 
+../src/ASF/sam0/drivers/sercom/usart/usart.h:
+
+../src/ASF/sam0/drivers/sercom/usart/usart_interrupt.h:
+
+../src/ASF/sam0/drivers/sercom/usart/usart.h:
+
 ../src/ASF/common/services/sleepmgr/samd/sleepmgr.h:
 
 ../src/config/conf_sleepmgr.h:
@@ -459,6 +505,12 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-no
 ../src/ASF/common/services/sleepmgr/sleepmgr.h:
 
 ../src/ASF/common/services/sleepmgr/samd/sleepmgr.h:
+
+../src/ASF/sam0/utils/stdio/stdio_serial/stdio_serial.h:
+
+../src/ASF/common/services/serial/serial.h:
+
+../src/ASF/common/services/serial/sam0_usart/usart_serial.h:
 
 ../src/ASF/sam0/drivers/usb/usb.h:
 

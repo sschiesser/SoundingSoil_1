@@ -59,12 +59,12 @@ int main(void)
 
 	// Initialize the sleep manager
 	sleepmgr_init();
-#if !SAM0
-	sysclk_init();
-	board_init();
-#else
+//#if !SAM0
+	//sysclk_init();
+	//board_init();
+//#else
 	system_init();
-#endif
+//#endif
 	ui_init();
 	ui_powerdown();
 	sd_mmc_init();
