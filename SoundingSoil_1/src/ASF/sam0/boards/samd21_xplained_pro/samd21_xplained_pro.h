@@ -127,33 +127,12 @@ void system_board_init(void);
 #define LED_0_PWM4CTRL_PIN			PIN_PB30E_TCC0_WO0
 #define LED_0_PWM4CTRL_MUX			MUX_PB30E_TCC0_WO0
 #define LED_0_PWM4CTRL_PINMUX		PINMUX_PB30E_TCC0_WO0
-
-
-/* LED definitions */
-#define UI_LED_1_NAME				"LED1"
-#define UI_LED_1_PIN				PIN_PA12
-#define UI_LED_1_ACTIVE				UI_LED_ACTIVE
-#define UI_LED_1_INACTIVE			UI_LED_INACTIVE
-#define UI_LED_1_GPIO				UI_LED_1_PIN
-#define UI_LED_1					UI_LED_1_PIN
-
-#define UI_LED_2_NAME				"LED2"
-#define UI_LED_2_PIN				PIN_PA13
-#define UI_LED_2_ACTIVE				UI_LED_ACTIVE
-#define UI_LED_2_INACTIVE			UI_LED_INACTIVE
-#define UI_LED_2_GPIO				UI_LED_2_PIN
-#define UI_LED_2					UI_LED_2_PIN
-
-#define UI_LED_3_NAME				"LED3"
-#define UI_LED_3_PIN				PIN_PA15
-#define UI_LED_3_ACTIVE				UI_LED_ACTIVE
-#define UI_LED_3_INACTIVE			UI_LED_INACTIVE
-#define UI_LED_3_GPIO				UI_LED_3_PIN
-#define UI_LED_3					UI_LED_3_PIN
 /** @} */
 
+
+
 /** Number of on-board LEDs */
-#define LED_COUNT					4
+#define LED_COUNT					1
 
 /**
  * \name Serialflash definitions
@@ -185,35 +164,6 @@ void system_board_init(void);
 #define BUTTON_0_EIC_MUX			SW0_EIC_MUX
 #define BUTTON_0_EIC_PINMUX			SW0_EIC_PINMUX
 #define BUTTON_0_EIC_LINE			SW0_EIC_LINE
-
-/* Buttons definitions */
-#define UI_BUT_1_NAME				"SW1"
-#define UI_BUT_1_PIN				PIN_PA28
-#define UI_BUT_1_ACTIVE				UI_BUT_ACTIVE
-#define UI_BUT_1_INACTIVE			UI_BUT_INACTIVE
-#define UI_BUT_1_EIC_PIN			PIN_PA28A_EIC_EXTINT8
-#define UI_BUT_1_MUX				MUX_PA28A_EIC_EXTINT8
-#define UI_BUT_1_PINMUX				PINMUX_PA28A_EIC_EXTINT8
-#define UI_BUT_1_EIC_LINE			8
-
-#define UI_BUT_2_NAME				"SW2"
-#define UI_BUT_2_PIN				PIN_PA02
-#define UI_BUT_2_ACTIVE				UI_BUT_ACTIVE
-#define UI_BUT_2_INACTIVE			UI_BUT_INACTIVE
-#define UI_BUT_2_EIC_PIN			PIN_PA02A_EIC_EXTINT2
-#define UI_BUT_2_MUX				MUX_PA02A_EIC_EXTINT2
-#define UI_BUT_2_PINMUX				PINMUX_PA02A_EIC_EXTINT2
-#define UI_BUT_2_EIC_LINE			2
-
-#define UI_BUT_3_NAME				"SW3"
-#define UI_BUT_3_PIN				PIN_PA03
-#define UI_BUT_3_ACTIVE				UI_BUT_ACTIVE
-#define UI_BUT_3_INACTIVE			UI_BUT_INACTIVE
-#define UI_BUT_3_EIC_PIN			PIN_PA03A_EIC_EXTINT3
-#define UI_BUT_3_MUX				MUX_PA03A_EIC_EXTINT3
-#define UI_BUT_3_PINMUX				PINMUX_PA03A_EIC_EXTINT3
-#define UI_BUT_3_EIC_LINE			3
-
 /** @} */
 
 

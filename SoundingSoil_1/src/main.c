@@ -59,30 +59,28 @@ int main(void)
 
 	// Initialize the sleep manager
 	sleepmgr_init();
-//#if !SAM0
-	//sysclk_init();
-	//board_init();
-//#else
+
 	system_init();
-//#endif
 	ui_init();
 	ui_powerdown();
 	sd_mmc_init();
 
 	memories_initialization();
 
+	ui_configure_callback();
+	
 	// Start USB stack to authorize VBus monitoring
 	udc_start();
 
 	// The main loop manages only the power mode
 	// because the USB management is done by interrupt
 	while (true) {
-
 		if (main_b_msc_enable) {
 			if (!udi_msc_process_trans()) {
 				sleepmgr_enter_sleep();
 			}
-		}else{
+		}
+		else{
 			sleepmgr_enter_sleep();
 		}
 	}

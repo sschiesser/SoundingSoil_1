@@ -100,6 +100,11 @@
 //! \brief Initializes the user interface
 void ui_init(void);
 
+void ui_configure_callback(void);
+void ui_button1_callback(void);
+void ui_button2_callback(void);
+void ui_button3_callback(void);
+
 //! \brief Enters the user interface in power down mode
 void ui_powerdown(void);
 

@@ -49,7 +49,6 @@
 
 #include "compiler.h"
 
-#warning You must refill the following definitions with a correct values
 
 /**
  * USB Device Configuration
@@ -61,17 +60,17 @@
 #define  USB_DEVICE_PRODUCT_ID            USB_PID_ATMEL_ASF_MSC
 #define  USB_DEVICE_MAJOR_VERSION         1
 #define  USB_DEVICE_MINOR_VERSION         0
-#define  USB_DEVICE_POWER                 100 // Consumption on VBUS line (mA)
-#define  USB_DEVICE_ATTR                  \
+#define  USB_DEVICE_POWER                 100 // Consumption on Vbus line (mA)
+#define  USB_DEVICE_ATTR                \
 	(USB_CONFIG_ATTR_SELF_POWERED)
-// (USB_CONFIG_ATTR_BUS_POWERED)
+//	(USB_CONFIG_ATTR_BUS_POWERED)
 //	(USB_CONFIG_ATTR_REMOTE_WAKEUP|USB_CONFIG_ATTR_SELF_POWERED)
 //	(USB_CONFIG_ATTR_REMOTE_WAKEUP|USB_CONFIG_ATTR_BUS_POWERED)
 
 //! USB Device string definitions (Optional)
-// #define  USB_DEVICE_MANUFACTURE_NAME      "Manufacture name"
-// #define  USB_DEVICE_PRODUCT_NAME          "Product name"
-#define  USB_DEVICE_SERIAL_NAME           "12...EF"	// Disk SN for MSC
+#define  USB_DEVICE_MANUFACTURE_NAME      "ATMEL ASF"
+#define  USB_DEVICE_PRODUCT_NAME          "MSC"
+#define  USB_DEVICE_SERIAL_NAME           "123123123123"	// Disk SN for MSC
 
 /**
  * Device speeds support
@@ -80,7 +79,9 @@
  */
 //! To authorize the High speed
 #if (UC3A3||UC3A4)
-//#define  USB_DEVICE_HS_SUPPORT
+#  define  USB_DEVICE_HS_SUPPORT
+#elif (SAM3XA||SAM3U)
+#  define  USB_DEVICE_HS_SUPPORT
 #endif
 //@}
 
@@ -89,14 +90,10 @@
  * USB Device Callbacks definitions (Optional)
  * @{
  */
-// #define  UDC_VBUS_EVENT(b_vbus_high)      user_callback_vbus_action(b_vbus_high)
-// extern void user_callback_vbus_action(bool b_vbus_high);
-// #define  UDC_SOF_EVENT()                  user_callback_sof_action()
-// extern void user_callback_sof_action(void);
-// #define  UDC_SUSPEND_EVENT()              user_callback_suspend_action()
-// extern void user_callback_suspend_action(void);
-// #define  UDC_RESUME_EVENT()               user_callback_resume_action()
-// extern void user_callback_resume_action(void);
+#define  UDC_VBUS_EVENT(b_vbus_high)
+#define  UDC_SOF_EVENT()                  main_sof_action()
+#define  UDC_SUSPEND_EVENT()              main_suspend_action()
+#define  UDC_RESUME_EVENT()               main_resume_action()
 //! Mandatory when USB_DEVICE_ATTR authorizes remote wakeup feature
 // #define  UDC_REMOTEWAKEUP_ENABLE()        user_callback_remotewakeup_enable()
 // extern void user_callback_remotewakeup_enable(void);
@@ -127,17 +124,8 @@
    '1', '.', '0', '0'
 
 //! Interface callback definition
-#define  UDI_MSC_ENABLE_EXT()          true
-#define  UDI_MSC_DISABLE_EXT()
-#define  UDI_MSC_NOTIFY_TRANS_EXT()
-/*
- * #define UDI_MSC_ENABLE_EXT() my_callback_msc_enable()
- * extern bool my_callback_msc_enable(void);
- * #define UDI_MSC_DISABLE_EXT() my_callback_msc_disable()
- * extern void my_callback_msc_disable(void);
- * #define  UDI_MSC_NOTIFY_TRANS_EXT()    msc_notify_trans()
- * extern void msc_notify_trans(void) {
- */
+#define  UDI_MSC_ENABLE_EXT()          main_msc_enable()
+#define  UDI_MSC_DISABLE_EXT()         main_msc_disable()
 //@}
 
 //@}
@@ -151,5 +139,6 @@
 
 //! The includes of classes and other headers must be done at the end of this file to avoid compile error
 #include "udi_msc_conf.h"
+#include "main.h"
 
 #endif // _CONF_USB_H_
