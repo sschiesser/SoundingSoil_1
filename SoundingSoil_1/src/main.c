@@ -51,6 +51,10 @@
 static volatile bool main_b_msc_enable = false;
 //! Structure for UART module connected to CDC
 struct usart_module cdc_uart_module;
+//! Structure for SPI module connected to ADC
+struct spi_module adc_spi_module;
+//! Structure for SPI slave (ADC device)
+struct spi_slave_inst adc_spi_slave;
 
 
 /*! \brief Main function. Execution starts here.

@@ -2,6 +2,8 @@
 # Automatically-generated file. Do not edit or delete the file
 ################################################################################
 
+src\ADC.c
+
 src\ASF\common2\components\memory\sd_mmc\sd_mmc.c
 
 src\ASF\common\services\usb\class\msc\device\udi_msc.c
