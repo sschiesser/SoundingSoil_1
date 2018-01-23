@@ -49,6 +49,9 @@
 #include "ui.h"
 
 static volatile bool main_b_msc_enable = false;
+//! Structure for UART module connected to CDC
+struct usart_module cdc_uart_module;
+
 
 /*! \brief Main function. Execution starts here.
  */
@@ -61,8 +64,9 @@ int main(void)
 	sleepmgr_init();
 
 	system_init();
-	ui_init();
+	ui_lb_init();
 	ui_powerdown();
+	ui_cdc_init();
 	sd_mmc_init();
 
 	memories_initialization();
@@ -72,15 +76,16 @@ int main(void)
 	// Start USB stack to authorize VBus monitoring
 	udc_start();
 
-	// The main loop manages only the power mode
-	// because the USB management is done by interrupt
+	/* The main loop manages only the power mode
+	 * because the USB management & button detection
+	 * are done by interrupt */
 	while (true) {
 		if (main_b_msc_enable) {
 			if (!udi_msc_process_trans()) {
 				sleepmgr_enter_sleep();
 			}
 		}
-		else{
+		else {
 			sleepmgr_enter_sleep();
 		}
 	}

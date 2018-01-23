@@ -173,7 +173,8 @@ src/ui.d src/ui.o: ../src/ui.c ../src/asf.h \
  ../src/ASF/common/services/usb/udc/udc_desc.h \
  ../src/ASF/common/services/usb/udc/udi.h \
  ../src/ASF/common/services/usb/udc/udc.h \
- ../src/ASF/common/services/usb/udc/udd.h ../src/ui.h
+ ../src/ASF/common/services/usb/udc/udd.h ../src/ui.h \
+ ../src/config/conf_ui.h
 
 ../src/asf.h:
 
@@ -540,3 +541,5 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-no
 ../src/ASF/common/services/usb/udc/udd.h:
 
 ../src/ui.h:
+
+../src/config/conf_ui.h:

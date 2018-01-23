@@ -977,6 +977,9 @@
     <Compile Include="src\config\conf_board.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\config\conf_ui.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\config\conf_clocks.h">
       <SubType>compile</SubType>
     </Compile>

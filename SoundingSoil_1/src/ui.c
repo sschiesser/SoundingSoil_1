@@ -47,11 +47,34 @@
 #include <asf.h>
 #include "ui.h"
 #include "conf_board.h"
+#include "conf_ui.h"
 
-//#define  LED_On(led_pin)          port_pin_set_output_level(led_pin, UI_LED_ACTIVE)
-//#define  LED_Off(led_pin)         port_pin_set_output_level(led_pin, UI_LED_INACTIVE)
+extern struct usart_module cdc_uart_module;
 
-void ui_init(void)
+/**
+ * \brief Initialize the USART for console output
+ *
+ * Initializes the SERCOM USART used for sending the output to the
+ * computer via the EDBG CDC gateway.
+ */
+void ui_cdc_init(void)
+{
+	struct usart_config usart_conf;
+
+	/* Configure USART for unit test output */
+	usart_get_config_defaults(&usart_conf);
+	usart_conf.mux_setting = UI_CDC_MUX_SETTING;
+	usart_conf.pinmux_pad0 = UI_CDC_PINMUX_PAD0;
+	usart_conf.pinmux_pad1 = UI_CDC_PINMUX_PAD1;
+	usart_conf.pinmux_pad2 = UI_CDC_PINMUX_PAD2;
+	usart_conf.pinmux_pad3 = UI_CDC_PINMUX_PAD3;
+	usart_conf.baudrate    = CONF_CDC_BAUDRATE;
+
+	stdio_serial_init(&cdc_uart_module, UI_CDC_MODULE, &usart_conf);
+	usart_enable(&cdc_uart_module);
+}
+
+void ui_lb_init(void)
 {
 	/* Configure LEDs as outputs, turn them off */
 	struct port_config pin_conf;
