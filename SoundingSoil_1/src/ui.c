@@ -48,8 +48,8 @@
 #include "ui.h"
 #include "conf_board.h"
 
-#define  LED_On(led_pin)          port_pin_set_output_level(led_pin, UI_LED_ACTIVE)
-#define  LED_Off(led_pin)         port_pin_set_output_level(led_pin, UI_LED_INACTIVE)
+//#define  LED_On(led_pin)          port_pin_set_output_level(led_pin, UI_LED_ACTIVE)
+//#define  LED_Off(led_pin)         port_pin_set_output_level(led_pin, UI_LED_INACTIVE)
 
 void ui_init(void)
 {
@@ -93,6 +93,8 @@ void ui_configure_callback(void)
 	extint_register_callback(ui_button2_callback, UI_BUT_2_EIC_LINE, EXTINT_CALLBACK_TYPE_DETECT);
 	extint_register_callback(ui_button3_callback, UI_BUT_3_EIC_LINE, EXTINT_CALLBACK_TYPE_DETECT);
 	extint_chan_enable_callback(UI_BUT_1_EIC_LINE, EXTINT_CALLBACK_TYPE_DETECT);
+	extint_chan_enable_callback(UI_BUT_2_EIC_LINE, EXTINT_CALLBACK_TYPE_DETECT);
+	extint_chan_enable_callback(UI_BUT_3_EIC_LINE, EXTINT_CALLBACK_TYPE_DETECT);
 }
 
 void ui_button1_callback(void)
@@ -104,7 +106,7 @@ void ui_button1_callback(void)
 void ui_button2_callback(void)
 {
 	bool pin_state = port_pin_get_input_level(UI_BUT_2_PIN);
-	port_pin_set_output_level(UI_LED_3_PIN, pin_state);
+	port_pin_set_output_level(UI_LED_2_PIN, pin_state);
 }
 
 void ui_button3_callback(void)
