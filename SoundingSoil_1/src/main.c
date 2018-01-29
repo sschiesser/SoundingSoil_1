@@ -55,6 +55,9 @@ struct usart_module cdc_uart_module;
 struct spi_module adc_spi_module;
 //! Structure for SPI slave (ADC device)
 struct spi_slave_inst adc_spi_slave;
+//! Bools for recording & monitoring state */
+bool recording_on = false;
+bool monitoring_on = false;
 
 
 /*! \brief Main function. Execution starts here.

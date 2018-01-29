@@ -130,7 +130,7 @@ SUBDIRS :=  \
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
-../src/ADC.c \
+../src/audio_in.c \
 ../src/ASF/common2/components/memory/sd_mmc/sd_mmc.c \
 ../src/ASF/common/services/usb/class/msc/device/udi_msc.c \
 ../src/ASF/common/services/usb/udc/udc.c \
@@ -180,7 +180,7 @@ ASM_SRCS +=
 
 
 OBJS +=  \
-src/ADC.o \
+src/audio_in.o \
 src/ASF/common2/components/memory/sd_mmc/sd_mmc.o \
 src/ASF/common/services/usb/class/msc/device/udi_msc.o \
 src/ASF/common/services/usb/udc/udc.o \
@@ -223,7 +223,7 @@ src/ASF/sam0/utils/cmsis/samd21/source/system_samd21.o \
 src/ASF/sam0/utils/syscalls/gcc/syscalls.o
 
 OBJS_AS_ARGS +=  \
-src/ADC.o \
+src/audio_in.o \
 src/ASF/common2/components/memory/sd_mmc/sd_mmc.o \
 src/ASF/common/services/usb/class/msc/device/udi_msc.o \
 src/ASF/common/services/usb/udc/udc.o \
@@ -266,7 +266,7 @@ src/ASF/sam0/utils/cmsis/samd21/source/system_samd21.o \
 src/ASF/sam0/utils/syscalls/gcc/syscalls.o
 
 C_DEPS +=  \
-src/ADC.d \
+src/audio_in.d \
 src/ASF/common2/components/memory/sd_mmc/sd_mmc.d \
 src/ASF/common/services/usb/class/msc/device/udi_msc.d \
 src/ASF/common/services/usb/udc/udc.d \
@@ -309,7 +309,7 @@ src/ASF/sam0/utils/cmsis/samd21/source/system_samd21.d \
 src/ASF/sam0/utils/syscalls/gcc/syscalls.d
 
 C_DEPS_AS_ARGS +=  \
-src/ADC.d \
+src/audio_in.d \
 src/ASF/common2/components/memory/sd_mmc/sd_mmc.d \
 src/ASF/common/services/usb/class/msc/device/udi_msc.d \
 src/ASF/common/services/usb/udc/udc.d \

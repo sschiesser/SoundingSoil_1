@@ -2,7 +2,7 @@
 # Automatically-generated file. Do not edit or delete the file
 ################################################################################
 
-src\ADC.c
+src\audio_in.c
 
 src\ASF\common2\components\memory\sd_mmc\sd_mmc.c
 

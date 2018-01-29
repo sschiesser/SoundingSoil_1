@@ -872,10 +872,10 @@
     <Folder Include="src\config\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="src\ADC.c">
+    <Compile Include="src\audio_in.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\ADC.h">
+    <Compile Include="src\audio_in.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\ASF\common2\components\memory\sd_mmc\sd_mmc.c">

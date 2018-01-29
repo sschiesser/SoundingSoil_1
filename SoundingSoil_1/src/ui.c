@@ -50,6 +50,8 @@
 #include "conf_ui.h"
 
 extern struct usart_module cdc_uart_module;
+extern bool recording_on;
+extern bool monitoring_on;
 
 /**
  * \brief Initialize the USART for console output
@@ -122,8 +124,17 @@ void ui_configure_callback(void)
 
 void ui_button1_callback(void)
 {
-	bool pin_state = port_pin_get_input_level(UI_BUT_1_PIN);
-	port_pin_set_output_level(UI_LED_1_PIN, pin_state);
+	bool press_state = !port_pin_get_input_level(UI_BUT_1_PIN);
+	if(press_state) {
+		if(recording_on) {
+			port_pin_set_output_level(UI_LED_1_PIN, UI_LED_INACTIVE);
+			recording_on = false;
+		}
+		else {
+			port_pin_set_output_level(UI_LED_1_PIN, UI_LED_ACTIVE);
+			recording_on = true;
+		}
+	}
 }
 
 void ui_button2_callback(void)
@@ -134,8 +145,17 @@ void ui_button2_callback(void)
 
 void ui_button3_callback(void)
 {
-	bool pin_state = port_pin_get_input_level(UI_BUT_3_PIN);
-	port_pin_set_output_level(UI_LED_3_PIN, pin_state);
+	bool press_state = !port_pin_get_input_level(UI_BUT_3_PIN);
+	if(press_state) {
+		if(monitoring_on) {
+			port_pin_set_output_level(UI_LED_3_PIN, UI_LED_INACTIVE);
+			monitoring_on = false;
+		}
+		else {
+			port_pin_set_output_level(UI_LED_3_PIN, UI_LED_ACTIVE);
+			monitoring_on = true;
+		}
+	}
 }
 
 void ui_powerdown(void)

@@ -1,15 +1,15 @@
 /*
- * ADC.h
+ * audio_in.h
  *
  * Created: 23.01.2018 14:10:54
  *  Author: schiesser
  */ 
 
 
-#ifndef ADC_H_
-#define ADC_H_
+#ifndef AUDIO_IN_H_
+#define AUDIO_IN_H_
 
-void adc_init(void);
+void audio_in_init(void);
 
 
 
