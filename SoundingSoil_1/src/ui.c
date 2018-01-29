@@ -50,8 +50,10 @@
 #include "conf_ui.h"
 
 extern struct usart_module cdc_uart_module;
+extern struct tc_module debounce_timer_module;
 extern bool recording_on;
 extern bool monitoring_on;
+extern bool debouncing_running;
 
 /**
  * \brief Initialize the USART for console output
@@ -112,6 +114,16 @@ void ui_lb_init(void)
 	LED_On(LED_0_PIN);
 }
 
+void ui_debouncer_init(void)
+{
+	struct tc_config config_tc;
+	tc_get_config_defaults(&config_tc);
+	config_tc.clock_source = GCLK_GENERATOR_7; // GCKL7 driven by the internal 32 kHz oscillator
+	config_tc.clock_prescaler = TC_CLOCK_PRESCALER_DIV256; // Counter running @ 128 Hz (7.8 ms accuracy)
+	tc_init(&debounce_timer_module, TC3, &config_tc);
+	tc_enable(&debounce_timer_module);
+}
+
 void ui_configure_callback(void)
 {
 	extint_register_callback(ui_button1_callback, UI_BUT_1_EIC_LINE, EXTINT_CALLBACK_TYPE_DETECT);
@@ -124,17 +136,51 @@ void ui_configure_callback(void)
 
 void ui_button1_callback(void)
 {
-	bool press_state = !port_pin_get_input_level(UI_BUT_1_PIN);
-	if(press_state) {
-		if(recording_on) {
-			port_pin_set_output_level(UI_LED_1_PIN, UI_LED_INACTIVE);
-			recording_on = false;
-		}
-		else {
-			port_pin_set_output_level(UI_LED_1_PIN, UI_LED_ACTIVE);
-			recording_on = true;
-		}
+	static uint32_t debounce_old = 0;
+	bool press_ok = false;
+	
+	uint32_t now = tc_get_count_value(&debounce_timer_module);
+	printf("Now? %ld", now);
+	if(now - debounce_old > 5) {
+		printf("Press OK\n\r");
+		debounce_old = now;
+		press_ok = true;
 	}
+	else {
+		printf("Bounce!\n\r");
+	}
+//
+	//bool press_state = !port_pin_get_input_level(UI_BUT_1_PIN);
+	//if(press_state) {
+		//
+		//
+		//if(recording_on) {
+			//port_pin_set_output_level(UI_LED_1_PIN, UI_LED_INACTIVE);
+			//recording_on = false;
+			//if(debouncing_running) {
+				//
+				//tc_stop_counter(&debounce_timer_module);
+				//debouncing_running = false;
+			//}
+			//else {
+				//tc_set_count_value(&debounce_timer_module, 0);
+				//tc_start_counter(&debounce_timer_module);
+				//debouncing_running = true;
+			//}
+		//}
+		//else {
+			//port_pin_set_output_level(UI_LED_1_PIN, UI_LED_ACTIVE);
+			//recording_on = true;
+			//if(debouncing_running) {
+				//tc_stop_counter(&debounce_timer_module);
+				//debouncing_running = false;
+			//}
+			//else {
+				//tc_start_counter(&debounce_timer_module);
+				//debouncing_running = true;
+			//}
+		//}
+	//}
 }
 
 void ui_button2_callback(void)

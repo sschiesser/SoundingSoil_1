@@ -55,9 +55,13 @@ struct usart_module cdc_uart_module;
 struct spi_module adc_spi_module;
 //! Structure for SPI slave (ADC device)
 struct spi_slave_inst adc_spi_slave;
+//! Structure for debouncing timer (TC)
+struct tc_module debounce_timer_module;
 //! Bools for recording & monitoring state */
 bool recording_on = false;
 bool monitoring_on = false;
+//! Bool for debouncing timer
+bool debouncing_running = false;
 
 
 /*! \brief Main function. Execution starts here.
@@ -72,6 +76,7 @@ int main(void)
 
 	system_init();
 	ui_lb_init();
+	ui_debouncer_init();
 	ui_powerdown();
 	ui_cdc_init();
 	sd_mmc_init();
@@ -82,6 +87,9 @@ int main(void)
 	
 	// Start USB stack to authorize VBus monitoring
 	udc_start();
+	
+	// Start debouncing (slow) counter
+	tc_start_counter(&debounce_timer_module);
 
 	/* The main loop manages only the power mode
 	 * because the USB management & button detection

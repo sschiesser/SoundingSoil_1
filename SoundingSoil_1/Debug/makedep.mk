@@ -2,6 +2,8 @@
 # Automatically-generated file. Do not edit or delete the file
 ################################################################################
 
+src\ASF\sam0\drivers\tc\tc_sam_d_r_h\tc.c
+
 src\audio_in.c
 
 src\ASF\common2\components\memory\sd_mmc\sd_mmc.c

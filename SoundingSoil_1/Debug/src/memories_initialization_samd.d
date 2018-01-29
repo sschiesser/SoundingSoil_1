@@ -160,7 +160,7 @@ src/memories_initialization_samd.d src/memories_initialization_samd.o: \
  ../src/ASF/sam0/utils/stdio/stdio_serial/stdio_serial.h \
  ../src/ASF/common/services/serial/serial.h \
  ../src/ASF/common/services/serial/sam0_usart/usart_serial.h \
- ../src/ASF/sam0/drivers/usb/usb.h \
+ ../src/ASF/sam0/drivers/tc/tc.h ../src/ASF/sam0/drivers/usb/usb.h \
  ../src/ASF/common/services/usb/class/msc/device/udi_msc.h \
  ../src/config/conf_usb.h \
  ../src/ASF/common/services/usb/class/msc/device/udi_msc_conf.h \
@@ -507,6 +507,8 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-no
 ../src/ASF/common/services/serial/serial.h:
 
 ../src/ASF/common/services/serial/sam0_usart/usart_serial.h:
+
+../src/ASF/sam0/drivers/tc/tc.h:
 
 ../src/ASF/sam0/drivers/usb/usb.h:
 

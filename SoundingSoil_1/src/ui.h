@@ -50,6 +50,9 @@
 //! \brief Initializes the user LED/BUTTON interface
 void ui_lb_init(void);
 
+//! \brief Initializes the timer/counter for button debouncing
+void ui_debouncer_init(void);
+
 //! \brief Initializes the CDC port for monitoring
 void ui_cdc_init(void);
 
