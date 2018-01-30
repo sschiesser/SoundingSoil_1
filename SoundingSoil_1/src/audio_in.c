@@ -36,14 +36,15 @@ void audio_in_init(void)
 	config_spi_master.pinmux_pad1 = ADC_SPI_PINMUX_PAD1;
 	config_spi_master.pinmux_pad2 = ADC_SPI_PINMUX_PAD2;
 	config_spi_master.pinmux_pad3 = ADC_SPI_PINMUX_PAD3;
+	config_spi_master.mode_specific.master.baudrate = ADC_SPI_BAUDRATE;
 	spi_init(&adc_spi_module, ADC_SPI_MODULE, &config_spi_master);
+	
 	spi_enable(&adc_spi_module);
 }
 
 
 void audio_record_1samp(void) {
-	port_pin_set_output_level(ADC_CONV_PIN, true);
-	delay_us(5);
+	delay_us(1);
 	port_pin_set_output_level(ADC_CONV_PIN, false);
 	spi_read_buffer_wait(&adc_spi_module, adc_values, 2, 0xFF);
 	port_pin_set_output_level(ADC_CONV_PIN, true);

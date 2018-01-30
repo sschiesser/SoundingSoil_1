@@ -76,6 +76,9 @@ int main(void)
 	sleepmgr_init();
 
 	system_init();
+	
+	delay_init();
+	
 	ui_lb_init();
 	ui_debouncer_init();
 	ui_powerdown();
@@ -92,8 +95,8 @@ int main(void)
 	// Start USB stack to authorize VBus monitoring
 	udc_start();
 	
-	// Start debouncing (slow) counter
-	tc_start_counter(&debounce_timer_module);
+	//// Start debouncing (slow) counter
+	//tc_start_counter(&debounce_timer_module);
 
 	/* The main loop manages only the power mode
 	 * because the USB management & button detection
@@ -104,12 +107,12 @@ int main(void)
 		}
 		else if (main_b_msc_enable) {
 			if (!udi_msc_process_trans()) {
-				sleepmgr_enter_sleep();
+				//sleepmgr_enter_sleep();
 			}
 		}
-		else {
-			sleepmgr_enter_sleep();
-		}
+		//else {
+			//sleepmgr_enter_sleep();
+		//}
 	}
 }
 
