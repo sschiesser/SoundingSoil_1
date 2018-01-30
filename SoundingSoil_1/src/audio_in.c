@@ -47,6 +47,4 @@ void audio_record_1samp(void) {
 	port_pin_set_output_level(ADC_CONV_PIN, false);
 	spi_read_buffer_wait(&adc_spi_module, adc_values, 2, 0xFF);
 	port_pin_set_output_level(ADC_CONV_PIN, true);
-	printf("0x%02x %02x\n\r", adc_values[0], adc_values[1]);
-	delay_ms(2);
 }
