@@ -47,6 +47,7 @@
 #include <asf.h>
 #include "conf_usb.h"
 #include "ui.h"
+#include "audio_in.h"
 
 static volatile bool main_b_msc_enable = false;
 //! Structure for UART module connected to CDC
@@ -60,8 +61,8 @@ struct tc_module debounce_timer_module;
 //! Bools for recording & monitoring state */
 bool recording_on = false;
 bool monitoring_on = false;
-//! Bool for debouncing timer
-bool debouncing_running = false;
+//! Array for read ADC values
+uint8_t adc_values[2] = {0};
 
 
 /*! \brief Main function. Execution starts here.
@@ -102,6 +103,10 @@ int main(void)
 		}
 		else {
 			sleepmgr_enter_sleep();
+		}
+		
+		if(recording_on) {
+			audio_record_1samp();
 		}
 	}
 }

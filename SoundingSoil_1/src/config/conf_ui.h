@@ -10,6 +10,7 @@
 #define CONF_UI_H_
 
 #define CONF_CDC_BAUDRATE			115200
+#define BUTTON_DEBOUNCE_MS			100
 
 
 

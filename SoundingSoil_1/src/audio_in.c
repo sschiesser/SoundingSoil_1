@@ -11,6 +11,7 @@
 
 extern struct spi_module adc_spi_module;
 extern struct spi_slave_inst adc_spi_slave;
+extern uint8_t adc_values[2];
 
 void audio_in_init(void)
 {
@@ -37,4 +38,15 @@ void audio_in_init(void)
 	config_spi_master.pinmux_pad3 = ADC_SPI_PINMUX_PAD3;
 	spi_init(&adc_spi_module, ADC_SPI_MODULE, &config_spi_master);
 	spi_enable(&adc_spi_module);
+}
+
+
+void audio_record_1samp(void) {
+	port_pin_set_output_level(ADC_CONV_PIN, true);
+	delay_us(5);
+	port_pin_set_output_level(ADC_CONV_PIN, false);
+	spi_read_buffer_wait(&adc_spi_module, adc_values, 2, 0xFF);
+	port_pin_set_output_level(ADC_CONV_PIN, true);
+	printf("0x%02x %02x\n\r", adc_values[0], adc_values[1]);
+	delay_ms(2);
 }

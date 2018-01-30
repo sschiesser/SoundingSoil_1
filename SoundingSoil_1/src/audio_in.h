@@ -11,6 +11,7 @@
 
 void audio_in_init(void);
 
+void audio_record_1samp(void);
 
 
 #endif /* ADC_H_ */

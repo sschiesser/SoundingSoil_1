@@ -1,48 +1,48 @@
 /**
- * \file
- *
- * \brief User Interface
- *
- * Copyright (c) 2014-2015 Atmel Corporation. All rights reserved.
- *
- * \asf_license_start
- *
- * \page License
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * 3. The name of Atmel may not be used to endorse or promote products derived
- *    from this software without specific prior written permission.
- *
- * 4. This software may only be redistributed and used in connection with an
- *    Atmel microcontroller product.
- *
- * THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
- * EXPRESSLY AND SPECIFICALLY DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
- * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
- * \asf_license_stop
- *
- */
+* \file
+*
+* \brief User Interface
+*
+* Copyright (c) 2014-2015 Atmel Corporation. All rights reserved.
+*
+* \asf_license_start
+*
+* \page License
+*
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that the following conditions are met:
+*
+* 1. Redistributions of source code must retain the above copyright notice,
+*    this list of conditions and the following disclaimer.
+*
+* 2. Redistributions in binary form must reproduce the above copyright notice,
+*    this list of conditions and the following disclaimer in the documentation
+*    and/or other materials provided with the distribution.
+*
+* 3. The name of Atmel may not be used to endorse or promote products derived
+*    from this software without specific prior written permission.
+*
+* 4. This software may only be redistributed and used in connection with an
+*    Atmel microcontroller product.
+*
+* THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR IMPLIED
+* WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
+* EXPRESSLY AND SPECIFICALLY DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR
+* ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+* OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+* ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+* POSSIBILITY OF SUCH DAMAGE.
+*
+* \asf_license_stop
+*
+*/
 /*
- * Support and FAQ: visit <a href="http://www.atmel.com/design-support/">Atmel Support</a>
- */
+* Support and FAQ: visit <a href="http://www.atmel.com/design-support/">Atmel Support</a>
+*/
 
 #include <asf.h>
 #include "ui.h"
@@ -53,14 +53,13 @@ extern struct usart_module cdc_uart_module;
 extern struct tc_module debounce_timer_module;
 extern bool recording_on;
 extern bool monitoring_on;
-extern bool debouncing_running;
 
 /**
- * \brief Initialize the USART for console output
- *
- * Initializes the SERCOM USART used for sending the output to the
- * computer via the EDBG CDC gateway.
- */
+* \brief Initialize the USART for console output
+*
+* Initializes the SERCOM USART used for sending the output to the
+* computer via the EDBG CDC gateway.
+*/
 void ui_cdc_init(void)
 {
 	struct usart_config usart_conf;
@@ -136,63 +135,63 @@ void ui_configure_callback(void)
 
 void ui_button1_callback(void)
 {
-	static uint32_t debounce_old = 0;
+	//static uint32_t debounce_old1 = 0;
 	bool press_ok = false;
+	bool press_state = !port_pin_get_input_level(UI_BUT_1_PIN);
 	
-	uint32_t now = tc_get_count_value(&debounce_timer_module);
-	printf("Now? %ld", now);
-	if(now - debounce_old > 5) {
-		printf("Press OK\n\r");
-		debounce_old = now;
-		press_ok = true;
+	if(press_state) {
+		delay_ms(BUTTON_DEBOUNCE_MS);
+		if(!port_pin_get_input_level(UI_BUT_1_PIN)) press_ok = true;
 	}
-	else {
-		printf("Bounce!\n\r");
+	
+	if(press_ok) {
+		if(recording_on) {
+			port_pin_set_output_level(UI_LED_1_PIN, UI_LED_INACTIVE);
+			recording_on = false;
+		}
+		else {
+			port_pin_set_output_level(UI_LED_1_PIN, UI_LED_ACTIVE);
+			recording_on = true;
+		}
 	}
-//
-	//bool press_state = !port_pin_get_input_level(UI_BUT_1_PIN);
-	//if(press_state) {
-		//
-		//
-		//if(recording_on) {
-			//port_pin_set_output_level(UI_LED_1_PIN, UI_LED_INACTIVE);
-			//recording_on = false;
-			//if(debouncing_running) {
-				//
-				//tc_stop_counter(&debounce_timer_module);
-				//debouncing_running = false;
-			//}
-			//else {
-				//tc_set_count_value(&debounce_timer_module, 0);
-				//tc_start_counter(&debounce_timer_module);
-				//debouncing_running = true;
-			//}
-		//}
-		//else {
-			//port_pin_set_output_level(UI_LED_1_PIN, UI_LED_ACTIVE);
-			//recording_on = true;
-			//if(debouncing_running) {
-				//tc_stop_counter(&debounce_timer_module);
-				//debouncing_running = false;
-			//}
-			//else {
-				//tc_start_counter(&debounce_timer_module);
-				//debouncing_running = true;
-			//}
-		//}
+
+	//uint32_t now = tc_get_count_value(&debounce_timer_module);
+	//if(now - debounce_old1 > BUTTON_DEBOUNCE_CNT) {
+	//debounce_old1 = now;
+	//press_ok = true;
+	//}
+	//
+	//if(press_state && press_ok) {
+	//
+	//if(recording_on) {
+	//printf("Switching off\n\r");
+	//port_pin_set_output_level(UI_LED_1_PIN, UI_LED_INACTIVE);
+	//recording_on = false;
+	//}
+	//else {
+	//printf("Switching on\n\r");
+	//port_pin_set_output_level(UI_LED_1_PIN, UI_LED_ACTIVE);
+	//recording_on = true;
+	//}
 	//}
 }
 
 void ui_button2_callback(void)
 {
-	bool pin_state = port_pin_get_input_level(UI_BUT_2_PIN);
-	port_pin_set_output_level(UI_LED_2_PIN, pin_state);
 }
 
 void ui_button3_callback(void)
 {
+	//static uint32_t debounce_old3 = 0;
+	bool press_ok = false;
 	bool press_state = !port_pin_get_input_level(UI_BUT_3_PIN);
+	
 	if(press_state) {
+		delay_ms(BUTTON_DEBOUNCE_MS);
+		if(!port_pin_get_input_level(UI_BUT_3_PIN)) press_ok = true;
+	}
+	
+	if(press_ok) {
 		if(monitoring_on) {
 			port_pin_set_output_level(UI_LED_3_PIN, UI_LED_INACTIVE);
 			monitoring_on = false;
@@ -202,6 +201,26 @@ void ui_button3_callback(void)
 			monitoring_on = true;
 		}
 	}
+	
+	//uint32_t now = tc_get_count_value(&debounce_timer_module);
+	//if(now - debounce_old3 > BUTTON_DEBOUNCE_CNT) {
+		//debounce_old3 = now;
+		//press_ok = true;
+	//}
+	//
+	//if(press_ok) {
+		//bool press_state = !port_pin_get_input_level(UI_BUT_3_PIN);
+		//if(press_state) { // button pressed (logical state: false)
+			//if(monitoring_on) {
+				//port_pin_set_output_level(UI_LED_3_PIN, UI_LED_INACTIVE);
+				//monitoring_on = false;
+			//}
+			//else { // button released (logical state: true)
+				//port_pin_set_output_level(UI_LED_3_PIN, UI_LED_ACTIVE);
+				//monitoring_on = true;
+			//}
+		//}
+	//}
 }
 
 void ui_powerdown(void)
@@ -242,9 +261,9 @@ void ui_process(uint16_t framenumber)
 
 
 /**
- * \defgroup UI User Interface
- *
- * Human interface on SAM D21 Xplained Pro
- * - LED0 blinks when USB host has checked and enabled MSC interface
- *
- */
+* \defgroup UI User Interface
+*
+* Human interface on SAM D21 Xplained Pro
+* - LED0 blinks when USB host has checked and enabled MSC interface
+*
+*/
