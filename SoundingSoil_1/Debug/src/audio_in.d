@@ -159,7 +159,9 @@ src/audio_in.d src/audio_in.o: ../src/audio_in.c ../src/asf.h \
  ../src/ASF/sam0/utils/stdio/stdio_serial/stdio_serial.h \
  ../src/ASF/common/services/serial/serial.h \
  ../src/ASF/common/services/serial/sam0_usart/usart_serial.h \
- ../src/ASF/sam0/drivers/tc/tc.h ../src/ASF/sam0/drivers/usb/usb.h \
+ ../src/ASF/sam0/drivers/tcc/tcc.h \
+ ../src/ASF/sam0/drivers/tcc/tcc_callback.h \
+ ../src/ASF/sam0/drivers/tcc/tcc.h ../src/ASF/sam0/drivers/usb/usb.h \
  ../src/ASF/common/services/usb/class/msc/device/udi_msc.h \
  ../src/config/conf_usb.h \
  ../src/ASF/common/services/usb/class/msc/device/udi_msc_conf.h \
@@ -173,7 +175,8 @@ src/audio_in.d src/audio_in.o: ../src/audio_in.c ../src/asf.h \
  ../src/ASF/common/services/usb/udc/udc_desc.h \
  ../src/ASF/common/services/usb/udc/udi.h \
  ../src/ASF/common/services/usb/udc/udc.h \
- ../src/ASF/common/services/usb/udc/udd.h ../src/audio_in.h
+ ../src/ASF/common/services/usb/udc/udd.h ../src/audio_in.h \
+ ../src/config/conf_audio.h
 
 ../src/asf.h:
 
@@ -507,7 +510,11 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-no
 
 ../src/ASF/common/services/serial/sam0_usart/usart_serial.h:
 
-../src/ASF/sam0/drivers/tc/tc.h:
+../src/ASF/sam0/drivers/tcc/tcc.h:
+
+../src/ASF/sam0/drivers/tcc/tcc_callback.h:
+
+../src/ASF/sam0/drivers/tcc/tcc.h:
 
 ../src/ASF/sam0/drivers/usb/usb.h:
 
@@ -542,3 +549,5 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-no
 ../src/ASF/common/services/usb/udc/udd.h:
 
 ../src/audio_in.h:
+
+../src/config/conf_audio.h:

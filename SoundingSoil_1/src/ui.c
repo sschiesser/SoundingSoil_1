@@ -50,7 +50,7 @@
 #include "conf_ui.h"
 
 extern struct usart_module cdc_uart_module;
-extern struct tc_module debounce_timer_module;
+extern struct tc_module audio_syncer_module;
 extern bool recording_on;
 extern bool monitoring_on;
 
@@ -113,16 +113,6 @@ void ui_lb_init(void)
 	LED_On(LED_0_PIN);
 }
 
-void ui_debouncer_init(void)
-{
-	struct tc_config config_tc;
-	tc_get_config_defaults(&config_tc);
-	config_tc.clock_source = GCLK_GENERATOR_7; // GCKL7 driven by the internal 32 kHz oscillator
-	config_tc.clock_prescaler = TC_CLOCK_PRESCALER_DIV256; // Counter running @ 128 Hz (7.8 ms accuracy)
-	tc_init(&debounce_timer_module, TC3, &config_tc);
-	tc_enable(&debounce_timer_module);
-}
-
 void ui_configure_callback(void)
 {
 	extint_register_callback(ui_button1_callback, UI_BUT_1_EIC_LINE, EXTINT_CALLBACK_TYPE_DETECT);
@@ -147,33 +137,15 @@ void ui_button1_callback(void)
 	if(press_ok) {
 		if(recording_on) {
 			port_pin_set_output_level(UI_LED_1_PIN, UI_LED_INACTIVE);
+			tcc_stop_counter(&audio_syncer_module);
 			recording_on = false;
 		}
 		else {
 			port_pin_set_output_level(UI_LED_1_PIN, UI_LED_ACTIVE);
+			tcc_restart_counter(&audio_syncer_module);
 			recording_on = true;
 		}
 	}
-
-	//uint32_t now = tc_get_count_value(&debounce_timer_module);
-	//if(now - debounce_old1 > BUTTON_DEBOUNCE_CNT) {
-	//debounce_old1 = now;
-	//press_ok = true;
-	//}
-	//
-	//if(press_state && press_ok) {
-	//
-	//if(recording_on) {
-	//printf("Switching off\n\r");
-	//port_pin_set_output_level(UI_LED_1_PIN, UI_LED_INACTIVE);
-	//recording_on = false;
-	//}
-	//else {
-	//printf("Switching on\n\r");
-	//port_pin_set_output_level(UI_LED_1_PIN, UI_LED_ACTIVE);
-	//recording_on = true;
-	//}
-	//}
 }
 
 void ui_button2_callback(void)
@@ -201,26 +173,6 @@ void ui_button3_callback(void)
 			monitoring_on = true;
 		}
 	}
-	
-	//uint32_t now = tc_get_count_value(&debounce_timer_module);
-	//if(now - debounce_old3 > BUTTON_DEBOUNCE_CNT) {
-		//debounce_old3 = now;
-		//press_ok = true;
-	//}
-	//
-	//if(press_ok) {
-		//bool press_state = !port_pin_get_input_level(UI_BUT_3_PIN);
-		//if(press_state) { // button pressed (logical state: false)
-			//if(monitoring_on) {
-				//port_pin_set_output_level(UI_LED_3_PIN, UI_LED_INACTIVE);
-				//monitoring_on = false;
-			//}
-			//else { // button released (logical state: true)
-				//port_pin_set_output_level(UI_LED_3_PIN, UI_LED_ACTIVE);
-				//monitoring_on = true;
-			//}
-		//}
-	//}
 }
 
 void ui_powerdown(void)

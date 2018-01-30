@@ -56,13 +56,13 @@ struct usart_module cdc_uart_module;
 struct spi_module adc_spi_module;
 //! Structure for SPI slave (ADC device)
 struct spi_slave_inst adc_spi_slave;
-//! Structure for debouncing timer (TC)
-struct tc_module debounce_timer_module;
+//! Structure for audio synchronization (TC)
+struct tcc_module audio_syncer_module;
 //! Bools for recording & monitoring state */
 bool recording_on = false;
 bool monitoring_on = false;
 //! Array for read ADC values
-uint8_t adc_values[2] = {0};
+uint16_t audio_buffer[100] = {0};
 
 
 /*! \brief Main function. Execution starts here.
@@ -80,11 +80,11 @@ int main(void)
 	delay_init();
 	
 	ui_lb_init();
-	ui_debouncer_init();
 	ui_powerdown();
 	ui_cdc_init();
 	
 	audio_in_init();
+	audio_sync_init();
 	
 	sd_mmc_init();
 
@@ -95,15 +95,12 @@ int main(void)
 	// Start USB stack to authorize VBus monitoring
 	udc_start();
 	
-	//// Start debouncing (slow) counter
-	//tc_start_counter(&debounce_timer_module);
-
 	/* The main loop manages only the power mode
 	 * because the USB management & button detection
 	 * are done by interrupt */
 	while (true) {
 		if(recording_on) {
-			audio_record_1samp();
+			//audio_record_1samp();
 		}
 		else if (main_b_msc_enable) {
 			if (!udi_msc_process_trans()) {

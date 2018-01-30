@@ -140,8 +140,9 @@
 // From module: Supported ports of FatFS
 #include <diskio.h>
 
-// From module: TC - Timer Counter (Polled APIs)
-#include <tc.h>
+// From module: TCC - Timer Counter for Control Applications (Callback APIs)
+#include <tcc.h>
+#include <tcc_callback.h>
 
 // From module: USART - Serial interface- SAM implementation for devices with only USART
 #include <serial.h>
