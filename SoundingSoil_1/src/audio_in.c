@@ -15,6 +15,8 @@ extern struct spi_slave_inst adc_spi_slave;
 extern struct tcc_module audio_syncer_module;
 extern uint16_t audio_buffer[100];
 
+volatile uint32_t audio_frame_cnt = 0;
+
 void audio_in_init(void)
 {
 	/* Initializing the CONV pin */
@@ -55,7 +57,11 @@ void audio_record_1samp(void) {
 }
 
 static void audio_sync_reached_callback(void) {
-	port_pin_toggle_output_level(PIN_PA20);
+	audio_record_1samp();
+	audio_frame_cnt++;
+	if(audio_frame_cnt >= 10000) {
+		audio_frame_cnt = 0;
+	}
 }
 
 void audio_sync_init(void) {
