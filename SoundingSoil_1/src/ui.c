@@ -137,13 +137,12 @@ void ui_button1_callback(void)
 	
 	if(press_ok) {
 		if(recording_on || recording_request) {
-			LED_Off(UI_LED_1_PIN);
+			LED_Off(UI_LED_REC);
 			//tcc_stop_counter(&audio_syncer_module);
 			recording_request = false;
 			recording_on = false;
 		}
 		else {
-			//port_pin_set_output_level(UI_LED_1_PIN, UI_LED_ACTIVE);
 			//tcc_restart_counter(&audio_syncer_module);
 			recording_request = true;
 		}

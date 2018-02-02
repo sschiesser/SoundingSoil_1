@@ -59,13 +59,33 @@ struct spi_module adc_spi_module;
 struct spi_slave_inst adc_spi_slave;
 //! Structure for audio synchronization (TCC)
 struct tcc_module audio_syncer_module;
-//! Bools for recording & monitoring state */
+//! Bools for recording & monitoring state
 bool recording_on = false;
 bool recording_request = false;
 bool monitoring_on = false;
 //! Array for read ADC values
 uint16_t audio_buffer[100] = {0};
+//! Struct for the RTC calendar
+struct rtc_module rtc_instance;
 
+static void calendar_init(void)
+{
+	struct rtc_calendar_config config_rtc_calendar;
+	rtc_calendar_get_config_defaults(&config_rtc_calendar);
+	config_rtc_calendar.clock_24h = true;
+	rtc_calendar_init(&rtc_instance, RTC, &config_rtc_calendar);
+	rtc_calendar_enable(&rtc_instance);
+	
+	struct rtc_calendar_time current_time;
+	current_time.year = 2018;
+	current_time.month = 02;
+	current_time.day = 02;
+	current_time.hour = 11;
+	current_time.minute = 39;
+	current_time.second = 42;
+	rtc_calendar_set_time(&rtc_instance, &current_time);
+	rtc_calendar_swap_time_mode(&rtc_instance);
+}
 
 /*! \brief Main function. Execution starts here.
  */
@@ -80,6 +100,8 @@ int main(void)
 	system_init();
 	
 	delay_init();
+	
+	calendar_init();
 	
 	ui_lb_init();
 	ui_powerdown();
@@ -102,12 +124,25 @@ int main(void)
 	 * are done by interrupt */
 	while (true) {
 		if(recording_request) {
+			/* Testing if SD card is present */
 			if(sd_test_availability()) {
+				/* Mounting file system from SD card */
+				if(sd_mount_fs()) {
+					printf("SD card mounted!\n\r");
+					audio_record_init();
+					recording_on = true;
+				}
+				else {
+					printf("Invalid drive!!\n\r");
+				}
 				recording_request = false;
-				recording_on = true;
-				LED_On(UI_LED_1_PIN);
 			}
 		}
+		
+		else if(recording_on) {
+
+		}
+		
 		else if (main_b_msc_enable) {
 			if (!udi_msc_process_trans()) {
 				//sleepmgr_enter_sleep();

@@ -57,6 +57,7 @@
 #define UI_LED_1_PIN			PIN_PA12
 #define UI_LED_1_ACTIVE			UI_LED_ACTIVE
 #define UI_LED_1_INACTIVE		UI_LED_INACTIVE
+#define UI_LED_REC				UI_LED_1_PIN
 
 #define UI_LED_2_NAME			"LED2"
 #define UI_LED_2_PIN			PIN_PA13
@@ -67,6 +68,7 @@
 #define UI_LED_3_PIN			PIN_PA15
 #define UI_LED_3_ACTIVE			UI_LED_ACTIVE
 #define UI_LED_3_INACTIVE		UI_LED_INACTIVE
+#define UI_LED_MON				UI_LED_3_PIN
 
 /* Buttons definitions */
 #define UI_BUT_1_NAME			"SW1"

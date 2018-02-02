@@ -176,7 +176,7 @@ src/audio_in.d src/audio_in.o: ../src/audio_in.c ../src/asf.h \
  ../src/ASF/common/services/usb/udc/udi.h \
  ../src/ASF/common/services/usb/udc/udc.h \
  ../src/ASF/common/services/usb/udc/udd.h ../src/audio_in.h \
- ../src/config/conf_audio.h
+ ../src/config/conf_audio.h ../src/sd_management.h
 
 ../src/asf.h:
 
@@ -551,3 +551,5 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-no
 ../src/audio_in.h:
 
 ../src/config/conf_audio.h:
+
+../src/sd_management.h:

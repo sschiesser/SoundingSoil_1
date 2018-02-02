@@ -10,7 +10,7 @@
 #define AUDIO_IN_H_
 
 void audio_in_init(void);
-
+void audio_record_init(void);
 void audio_record_1samp(void);
 
 void audio_sync_init(void);

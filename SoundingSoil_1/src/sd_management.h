@@ -13,6 +13,7 @@
 #define SD_SLOT_NUMBER				0
 
 bool sd_test_availability(void);
+bool sd_mount_fs(void);
 
 
 
