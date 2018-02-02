@@ -46,6 +46,8 @@ src\main.c
 
 src\memories_initialization_samd.c
 
+src\sd_management.c
+
 src\ui.c
 
 src\ASF\sam0\drivers\usb\usb_sam_d_r\usb.c

@@ -1,5 +1,5 @@
-src/main.d src/main.o: ../src/main.c ../src/asf.h \
- ../src/ASF/sam0/utils/compiler.h \
+src/sd_management.d src/sd_management.o: ../src/sd_management.c \
+ ../src/asf.h ../src/ASF/sam0/utils/compiler.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\6.3.1\include\stddef.h \
  ../src/ASF/common/utils/parts.h ../src/ASF/sam0/utils/status_codes.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\6.3.1\include\stdint.h \
@@ -175,8 +175,7 @@ src/main.d src/main.o: ../src/main.c ../src/asf.h \
  ../src/ASF/common/services/usb/udc/udc_desc.h \
  ../src/ASF/common/services/usb/udc/udi.h \
  ../src/ASF/common/services/usb/udc/udc.h \
- ../src/ASF/common/services/usb/udc/udd.h ../src/ui.h ../src/audio_in.h \
- ../src/sd_management.h
+ ../src/ASF/common/services/usb/udc/udd.h ../src/sd_management.h
 
 ../src/asf.h:
 
@@ -547,9 +546,5 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-no
 ../src/ASF/common/services/usb/udc/udc.h:
 
 ../src/ASF/common/services/usb/udc/udd.h:
-
-../src/ui.h:
-
-../src/audio_in.h:
 
 ../src/sd_management.h:

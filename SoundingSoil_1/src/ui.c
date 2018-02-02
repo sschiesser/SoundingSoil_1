@@ -50,8 +50,9 @@
 #include "conf_ui.h"
 
 extern struct usart_module cdc_uart_module;
-extern struct tc_module audio_syncer_module;
+extern struct tcc_module audio_syncer_module;
 extern bool recording_on;
+extern bool recording_request;
 extern bool monitoring_on;
 
 /**
@@ -135,15 +136,16 @@ void ui_button1_callback(void)
 	}
 	
 	if(press_ok) {
-		if(recording_on) {
-			port_pin_set_output_level(UI_LED_1_PIN, UI_LED_INACTIVE);
-			tcc_stop_counter(&audio_syncer_module);
+		if(recording_on || recording_request) {
+			LED_Off(UI_LED_1_PIN);
+			//tcc_stop_counter(&audio_syncer_module);
+			recording_request = false;
 			recording_on = false;
 		}
 		else {
-			port_pin_set_output_level(UI_LED_1_PIN, UI_LED_ACTIVE);
-			tcc_restart_counter(&audio_syncer_module);
-			recording_on = true;
+			//port_pin_set_output_level(UI_LED_1_PIN, UI_LED_ACTIVE);
+			//tcc_restart_counter(&audio_syncer_module);
+			recording_request = true;
 		}
 	}
 }
@@ -165,11 +167,11 @@ void ui_button3_callback(void)
 	
 	if(press_ok) {
 		if(monitoring_on) {
-			port_pin_set_output_level(UI_LED_3_PIN, UI_LED_INACTIVE);
+			LED_Off(UI_LED_3_PIN);
 			monitoring_on = false;
 		}
 		else {
-			port_pin_set_output_level(UI_LED_3_PIN, UI_LED_ACTIVE);
+			LED_On(UI_LED_3_PIN);
 			monitoring_on = true;
 		}
 	}

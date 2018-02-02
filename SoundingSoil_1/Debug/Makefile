@@ -160,6 +160,7 @@ C_SRCS +=  \
 ../src/ASF/thirdparty/fatfs/fatfs-r0.09/src/option/ccsbcs.c \
 ../src/main.c \
 ../src/memories_initialization_samd.c \
+../src/sd_management.c \
 ../src/ui.c \
 ../src/ASF/sam0/drivers/usb/usb_sam_d_r/usb.c \
 ../src/ASF/sam0/drivers/extint/extint_callback.c \
@@ -212,6 +213,7 @@ src/ASF/thirdparty/fatfs/fatfs-r0.09/src/ff.o \
 src/ASF/thirdparty/fatfs/fatfs-r0.09/src/option/ccsbcs.o \
 src/main.o \
 src/memories_initialization_samd.o \
+src/sd_management.o \
 src/ui.o \
 src/ASF/sam0/drivers/usb/usb_sam_d_r/usb.o \
 src/ASF/sam0/drivers/extint/extint_callback.o \
@@ -257,6 +259,7 @@ src/ASF/thirdparty/fatfs/fatfs-r0.09/src/ff.o \
 src/ASF/thirdparty/fatfs/fatfs-r0.09/src/option/ccsbcs.o \
 src/main.o \
 src/memories_initialization_samd.o \
+src/sd_management.o \
 src/ui.o \
 src/ASF/sam0/drivers/usb/usb_sam_d_r/usb.o \
 src/ASF/sam0/drivers/extint/extint_callback.o \
@@ -302,6 +305,7 @@ src/ASF/thirdparty/fatfs/fatfs-r0.09/src/ff.d \
 src/ASF/thirdparty/fatfs/fatfs-r0.09/src/option/ccsbcs.d \
 src/main.d \
 src/memories_initialization_samd.d \
+src/sd_management.d \
 src/ui.d \
 src/ASF/sam0/drivers/usb/usb_sam_d_r/usb.d \
 src/ASF/sam0/drivers/extint/extint_callback.d \
@@ -347,6 +351,7 @@ src/ASF/thirdparty/fatfs/fatfs-r0.09/src/ff.d \
 src/ASF/thirdparty/fatfs/fatfs-r0.09/src/option/ccsbcs.d \
 src/main.d \
 src/memories_initialization_samd.d \
+src/sd_management.d \
 src/ui.d \
 src/ASF/sam0/drivers/usb/usb_sam_d_r/usb.d \
 src/ASF/sam0/drivers/extint/extint_callback.d \
@@ -384,6 +389,8 @@ LINKER_SCRIPT_DEP+=  \
 
 
 # AVR32/GNU C Compiler
+
+
 
 
 

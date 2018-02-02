@@ -48,6 +48,7 @@
 #include "conf_usb.h"
 #include "ui.h"
 #include "audio_in.h"
+#include "sd_management.h"
 
 static volatile bool main_b_msc_enable = false;
 //! Structure for UART module connected to CDC
@@ -56,10 +57,11 @@ struct usart_module cdc_uart_module;
 struct spi_module adc_spi_module;
 //! Structure for SPI slave (ADC device)
 struct spi_slave_inst adc_spi_slave;
-//! Structure for audio synchronization (TC)
+//! Structure for audio synchronization (TCC)
 struct tcc_module audio_syncer_module;
 //! Bools for recording & monitoring state */
 bool recording_on = false;
+bool recording_request = false;
 bool monitoring_on = false;
 //! Array for read ADC values
 uint16_t audio_buffer[100] = {0};
@@ -99,8 +101,12 @@ int main(void)
 	 * because the USB management & button detection
 	 * are done by interrupt */
 	while (true) {
-		if(recording_on) {
-			//audio_record_1samp();
+		if(recording_request) {
+			if(sd_test_availability()) {
+				recording_request = false;
+				recording_on = true;
+				LED_On(UI_LED_1_PIN);
+			}
 		}
 		else if (main_b_msc_enable) {
 			if (!udi_msc_process_trans()) {
