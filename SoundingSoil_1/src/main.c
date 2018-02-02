@@ -68,6 +68,10 @@ uint16_t audio_buffer[100] = {0};
 //! Struct for the RTC calendar
 struct rtc_module rtc_instance;
 
+FATFS file_sys;
+FIL file_object;
+
+
 static void calendar_init(void)
 {
 	struct rtc_calendar_config config_rtc_calendar;

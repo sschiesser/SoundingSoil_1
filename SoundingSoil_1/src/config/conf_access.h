@@ -133,7 +133,7 @@
  */
 //! @{
 #define ACCESS_USB           true    //!< MEM <-> USB interface.
-#define ACCESS_MEM_TO_RAM    false   //!< MEM <-> RAM interface.
+#define ACCESS_MEM_TO_RAM    true   //!< MEM <-> RAM interface.
 #define ACCESS_STREAM        false   //!< Streaming MEM <-> MEM interface.
 #define ACCESS_STREAM_RECORD false   //!< Streaming MEM <-> MEM interface in record mode.
 #define ACCESS_MEM_TO_MEM    false   //!< MEM <-> MEM interface.

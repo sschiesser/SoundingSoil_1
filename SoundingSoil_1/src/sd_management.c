@@ -8,8 +8,8 @@
 #include <asf.h>
 #include "sd_management.h"
 
-FATFS file_sys;
-FIL file_object;
+extern FATFS file_sys;
+extern FIL file_object;
 
 extern bool recording_request;
 

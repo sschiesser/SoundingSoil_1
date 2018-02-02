@@ -19,8 +19,8 @@
 #define BYTE_RATE_LH				0xB1
 #define BYTE_RATE_HL				0x02
 #define BYTE_RATE_HH				0x00
-int16_t audio_ch0_buffer[NB_BUFFERS][PCM_BUF_SIZE] = {{0}};
-int16_t audio_ch1_buffer[NB_BUFFERS][PCB_BUF_SIZE] = {{0}};
+//int16_t audio_ch0_buffer[NB_BUFFERS][PCM_BUF_SIZE] = {{0}};
+//int16_t audio_ch1_buffer[NB_BUFFERS][PCB_BUF_SIZE] = {{0}};
 
 /*Wave header for PCM sound file */
 COMPILER_WORD_ALIGNED int8_t wave_header[44]= {
