@@ -313,11 +313,13 @@ int main(void)
 			syncing_reached = false;
 			audio_frame_cnt++;
 			if(audio_frame_cnt >= 882) {
+				port_pin_toggle_output_level(PIN_PB12);
 				audio_frame_cnt = 0;
 				if(!audio_write_chunck(audio_upper_buffer)) {
 					printf("Error writing chunck!\n\r");
 					while(1) {}
 				}
+				port_pin_toggle_output_level(PIN_PB12);
 				audio_upper_buffer = (audio_upper_buffer) ? false : true;
 			}
 			audio_record_1samp(audio_upper_buffer);
