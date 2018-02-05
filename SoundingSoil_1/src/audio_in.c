@@ -91,7 +91,7 @@ void audio_record_init(void) {
 	
 	generate_file_name(&file_name);
 	printf("Generated file name: %s\n\r", &file_name);
-	res = f_open(&file_object, (char const *)file_name, FA_CREATE_ALWAYS | FA_WRITE);
+	res = f_open(&file_object, (char const *)&file_name, FA_CREATE_ALWAYS | FA_WRITE);
 	if(res != FR_OK) {
 		printf("Error while opening file: #%d\n\r", res);
 	}

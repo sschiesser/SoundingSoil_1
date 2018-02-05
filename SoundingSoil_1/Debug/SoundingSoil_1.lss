@@ -17,23 +17,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   6 .comment      00000059  00000000  00000000  000201b4  2**0
                   CONTENTS, READONLY
-  7 .debug_info   0006f3ac  00000000  00000000  0002020d  2**0
+  7 .debug_info   0006f3b2  00000000  00000000  0002020d  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_abbrev 00008bd2  00000000  00000000  0008f5b9  2**0
+  8 .debug_abbrev 00008bd2  00000000  00000000  0008f5bf  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_loc    000167c6  00000000  00000000  0009818b  2**0
+  9 .debug_loc    000167c6  00000000  00000000  00098191  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_aranges 000010b8  00000000  00000000  000ae951  2**0
+ 10 .debug_aranges 000010b8  00000000  00000000  000ae957  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00001948  00000000  00000000  000afa09  2**0
+ 11 .debug_ranges 00001948  00000000  00000000  000afa0f  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_macro  00026bc9  00000000  00000000  000b1351  2**0
+ 12 .debug_macro  00026bc9  00000000  00000000  000b1357  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_line   000201ff  00000000  00000000  000d7f1a  2**0
+ 13 .debug_line   000201ff  00000000  00000000  000d7f20  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_str    0009fae7  00000000  00000000  000f8119  2**0
+ 14 .debug_str    0009fae7  00000000  00000000  000f811f  2**0
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_frame  000035ac  00000000  00000000  00197c00  2**2
+ 15 .debug_frame  000035ac  00000000  00000000  00197c08  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -1474,9 +1474,9 @@ void audio_record_init(void) {
      902:	4836      	ldr	r0, [pc, #216]	; (9dc <audio_record_init+0x188>)
      904:	4b36      	ldr	r3, [pc, #216]	; (9e0 <audio_record_init+0x18c>)
      906:	4798      	blx	r3
-	res = f_open(&file_object, (char const *)file_name, FA_CREATE_ALWAYS | FA_WRITE);
+	res = f_open(&file_object, (char const *)&file_name, FA_CREATE_ALWAYS | FA_WRITE);
      908:	220a      	movs	r2, #10
-     90a:	9905      	ldr	r1, [sp, #20]
+     90a:	0021      	movs	r1, r4
      90c:	4835      	ldr	r0, [pc, #212]	; (9e4 <audio_record_init+0x190>)
      90e:	4b36      	ldr	r3, [pc, #216]	; (9e8 <audio_record_init+0x194>)
      910:	4798      	blx	r3

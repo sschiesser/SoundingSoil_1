@@ -12004,48 +12004,48 @@ OUTPUT(SoundingSoil_1.elf elf32-littlearm)
  .comment       0x00000059       0x5a src/ASF/sam0/utils/cmsis/samd21/source/gcc/startup_samd21.o
  .comment       0x00000059       0x5a src/ASF/sam0/utils/syscalls/gcc/syscalls.o
 
-.debug_info     0x00000000    0x6f3ac
+.debug_info     0x00000000    0x6f3b2
  .debug_info    0x00000000     0x4d0a src/ASF/sam0/drivers/tcc/tcc.o
  .debug_info    0x00004d0a     0x3176 src/ASF/sam0/drivers/tcc/tcc_callback.o
- .debug_info    0x00007e80     0x80f3 src/audio_in.o
- .debug_info    0x0000ff73     0x2cbe src/ASF/common2/components/memory/sd_mmc/sd_mmc.o
- .debug_info    0x00012c31     0x224c src/ASF/common/services/usb/class/msc/device/udi_msc.o
- .debug_info    0x00014e7d     0x1a8b src/ASF/common/services/usb/udc/udc.o
- .debug_info    0x00016908     0x2b26 src/ASF/sam0/drivers/extint/extint_sam_d_r_h/extint.o
- .debug_info    0x0001942e     0x3340 src/ASF/sam0/drivers/rtc/rtc_sam_d_r_h/rtc_calendar.o
- .debug_info    0x0001c76e     0x2bea src/ASF/sam0/drivers/sercom/sercom_interrupt.o
- .debug_info    0x0001f358     0x4ac0 src/ASF/sam0/drivers/sercom/usart/usart.o
- .debug_info    0x00023e18     0x304b src/ASF/sam0/drivers/sercom/usart/usart_interrupt.o
- .debug_info    0x00026e63     0x394e src/ASF/sam0/drivers/system/clock/clock_samd21_r21_da_ha1/clock.o
- .debug_info    0x0002a7b1     0x6db5 src/ASF/sam0/drivers/usb/stack_interface/usb_device_udd.o
- .debug_info    0x00031566      0xacf src/ASF/sam0/utils/stdio/read.o
- .debug_info    0x00032035      0xacc src/ASF/sam0/utils/stdio/write.o
- .debug_info    0x00032b01     0x2553 src/ASF/thirdparty/fatfs/fatfs-port-r0.09/diskio.o
- .debug_info    0x00035054     0x1f26 src/ASF/thirdparty/fatfs/fatfs-port-r0.09/sam0/fattime_rtc.o
- .debug_info    0x00036f7a     0x3408 src/ASF/thirdparty/fatfs/fatfs-r0.09/src/ff.o
- .debug_info    0x0003a382      0x16d src/ASF/thirdparty/fatfs/fatfs-r0.09/src/option/ccsbcs.o
- .debug_info    0x0003a4ef     0x6eba src/main.o
- .debug_info    0x000413a9      0xee1 src/memories_initialization_samd.o
- .debug_info    0x0004228a     0x1b83 src/sd_management.o
- .debug_info    0x00043e0d     0x66cd src/ui.o
- .debug_info    0x0004a4da     0x5279 src/ASF/sam0/drivers/usb/usb_sam_d_r/usb.o
- .debug_info    0x0004f753     0x19a7 src/ASF/sam0/drivers/extint/extint_callback.o
- .debug_info    0x000510fa     0x1082 src/ASF/common/services/usb/class/msc/device/udi_msc_desc.o
- .debug_info    0x0005217c     0x2de4 src/ASF/sam0/drivers/sercom/sercom.o
- .debug_info    0x00054f60     0x6619 src/ASF/sam0/drivers/sercom/spi/spi.o
- .debug_info    0x0005b579      0xa64 src/ASF/common2/services/delay/sam0/cycle_counter.o
- .debug_info    0x0005bfdd     0x18b9 src/ASF/common2/components/memory/sd_mmc/sd_mmc_mem.o
- .debug_info    0x0005d896     0x4a1a src/ASF/common2/components/memory/sd_mmc/sd_mmc_spi.o
- .debug_info    0x000622b0      0xa8e src/ASF/common/services/sleepmgr/samd/sleepmgr.o
- .debug_info    0x00062d3e     0x10ea src/ASF/common/services/storage/ctrl_access/ctrl_access.o
- .debug_info    0x00063e28      0xb07 src/ASF/common/utils/interrupt/interrupt_sam_nvic.o
- .debug_info    0x0006492f     0x12ad src/ASF/sam0/boards/samd21_xplained_pro/board_init.o
- .debug_info    0x00065bdc     0x12b6 src/ASF/sam0/drivers/port/port.o
- .debug_info    0x00066e92     0x1ed1 src/ASF/sam0/drivers/system/clock/clock_samd21_r21_da_ha1/gclk.o
- .debug_info    0x00068d63     0x13f5 src/ASF/sam0/drivers/system/pinmux/pinmux.o
- .debug_info    0x0006a158      0xa73 src/ASF/sam0/drivers/system/system.o
- .debug_info    0x0006abcb     0x3a49 src/ASF/sam0/utils/cmsis/samd21/source/gcc/startup_samd21.o
- .debug_info    0x0006e614      0xd98 src/ASF/sam0/utils/syscalls/gcc/syscalls.o
+ .debug_info    0x00007e80     0x80f9 src/audio_in.o
+ .debug_info    0x0000ff79     0x2cbe src/ASF/common2/components/memory/sd_mmc/sd_mmc.o
+ .debug_info    0x00012c37     0x224c src/ASF/common/services/usb/class/msc/device/udi_msc.o
+ .debug_info    0x00014e83     0x1a8b src/ASF/common/services/usb/udc/udc.o
+ .debug_info    0x0001690e     0x2b26 src/ASF/sam0/drivers/extint/extint_sam_d_r_h/extint.o
+ .debug_info    0x00019434     0x3340 src/ASF/sam0/drivers/rtc/rtc_sam_d_r_h/rtc_calendar.o
+ .debug_info    0x0001c774     0x2bea src/ASF/sam0/drivers/sercom/sercom_interrupt.o
+ .debug_info    0x0001f35e     0x4ac0 src/ASF/sam0/drivers/sercom/usart/usart.o
+ .debug_info    0x00023e1e     0x304b src/ASF/sam0/drivers/sercom/usart/usart_interrupt.o
+ .debug_info    0x00026e69     0x394e src/ASF/sam0/drivers/system/clock/clock_samd21_r21_da_ha1/clock.o
+ .debug_info    0x0002a7b7     0x6db5 src/ASF/sam0/drivers/usb/stack_interface/usb_device_udd.o
+ .debug_info    0x0003156c      0xacf src/ASF/sam0/utils/stdio/read.o
+ .debug_info    0x0003203b      0xacc src/ASF/sam0/utils/stdio/write.o
+ .debug_info    0x00032b07     0x2553 src/ASF/thirdparty/fatfs/fatfs-port-r0.09/diskio.o
+ .debug_info    0x0003505a     0x1f26 src/ASF/thirdparty/fatfs/fatfs-port-r0.09/sam0/fattime_rtc.o
+ .debug_info    0x00036f80     0x3408 src/ASF/thirdparty/fatfs/fatfs-r0.09/src/ff.o
+ .debug_info    0x0003a388      0x16d src/ASF/thirdparty/fatfs/fatfs-r0.09/src/option/ccsbcs.o
+ .debug_info    0x0003a4f5     0x6eba src/main.o
+ .debug_info    0x000413af      0xee1 src/memories_initialization_samd.o
+ .debug_info    0x00042290     0x1b83 src/sd_management.o
+ .debug_info    0x00043e13     0x66cd src/ui.o
+ .debug_info    0x0004a4e0     0x5279 src/ASF/sam0/drivers/usb/usb_sam_d_r/usb.o
+ .debug_info    0x0004f759     0x19a7 src/ASF/sam0/drivers/extint/extint_callback.o
+ .debug_info    0x00051100     0x1082 src/ASF/common/services/usb/class/msc/device/udi_msc_desc.o
+ .debug_info    0x00052182     0x2de4 src/ASF/sam0/drivers/sercom/sercom.o
+ .debug_info    0x00054f66     0x6619 src/ASF/sam0/drivers/sercom/spi/spi.o
+ .debug_info    0x0005b57f      0xa64 src/ASF/common2/services/delay/sam0/cycle_counter.o
+ .debug_info    0x0005bfe3     0x18b9 src/ASF/common2/components/memory/sd_mmc/sd_mmc_mem.o
+ .debug_info    0x0005d89c     0x4a1a src/ASF/common2/components/memory/sd_mmc/sd_mmc_spi.o
+ .debug_info    0x000622b6      0xa8e src/ASF/common/services/sleepmgr/samd/sleepmgr.o
+ .debug_info    0x00062d44     0x10ea src/ASF/common/services/storage/ctrl_access/ctrl_access.o
+ .debug_info    0x00063e2e      0xb07 src/ASF/common/utils/interrupt/interrupt_sam_nvic.o
+ .debug_info    0x00064935     0x12ad src/ASF/sam0/boards/samd21_xplained_pro/board_init.o
+ .debug_info    0x00065be2     0x12b6 src/ASF/sam0/drivers/port/port.o
+ .debug_info    0x00066e98     0x1ed1 src/ASF/sam0/drivers/system/clock/clock_samd21_r21_da_ha1/gclk.o
+ .debug_info    0x00068d69     0x13f5 src/ASF/sam0/drivers/system/pinmux/pinmux.o
+ .debug_info    0x0006a15e      0xa73 src/ASF/sam0/drivers/system/system.o
+ .debug_info    0x0006abd1     0x3a49 src/ASF/sam0/utils/cmsis/samd21/source/gcc/startup_samd21.o
+ .debug_info    0x0006e61a      0xd98 src/ASF/sam0/utils/syscalls/gcc/syscalls.o
 
 .debug_abbrev   0x00000000     0x8bd2
  .debug_abbrev  0x00000000      0x45b src/ASF/sam0/drivers/tcc/tcc.o
