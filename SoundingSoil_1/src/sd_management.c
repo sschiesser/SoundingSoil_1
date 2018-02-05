@@ -8,10 +8,7 @@
 #include <asf.h>
 #include "sd_management.h"
 
-extern FATFS file_sys;
-extern FIL file_object;
-
-extern bool recording_request;
+extern volatile bool recording_request;
 
 bool sd_test_availability(void)
 {
@@ -36,15 +33,4 @@ bool sd_test_availability(void)
 	LED_Off(UI_LED_REC);
 	LED_Off(UI_LED_MON);
 	return retVal;
-}
-
-bool sd_mount_fs(void)
-{
-	FRESULT res;
-	memset(&file_sys, 0, sizeof(FATFS));
-	res = f_mount(LUN_ID_SD_MMC_SPI_MEM, &file_sys);
-	if(res == FR_INVALID_DRIVE) {
-		return false;
-	}
-	return true;
 }

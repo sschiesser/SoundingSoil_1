@@ -50,10 +50,10 @@
 #include "conf_ui.h"
 
 extern struct usart_module cdc_uart_module;
-extern struct tcc_module audio_syncer_module;
-extern bool recording_on;
-extern bool recording_request;
-extern bool monitoring_on;
+
+extern volatile bool recording_running;
+extern volatile bool recording_request;
+extern volatile bool monitoring_on;
 
 /**
 * \brief Initialize the USART for console output
@@ -109,9 +109,6 @@ void ui_lb_init(void)
 	config_extint_chan.gpio_pin_pull = EXTINT_PULL_UP;
 	config_extint_chan.detection_criteria = EXTINT_DETECT_BOTH;
 	extint_chan_set_config(UI_BUT_3_EIC_LINE, &config_extint_chan);
-	
-	/* Initialize LEDs */
-	LED_On(LED_0_PIN);
 }
 
 void ui_configure_callback(void)
@@ -126,7 +123,6 @@ void ui_configure_callback(void)
 
 void ui_button1_callback(void)
 {
-	//static uint32_t debounce_old1 = 0;
 	bool press_ok = false;
 	bool press_state = !port_pin_get_input_level(UI_BUT_1_PIN);
 	
@@ -136,11 +132,10 @@ void ui_button1_callback(void)
 	}
 	
 	if(press_ok) {
-		if(recording_on || recording_request) {
+		if(recording_running || recording_request) {
 			LED_Off(UI_LED_REC);
-			//tcc_stop_counter(&audio_syncer_module);
 			recording_request = false;
-			recording_on = false;
+			recording_running = false;
 		}
 		else {
 			//tcc_restart_counter(&audio_syncer_module);
