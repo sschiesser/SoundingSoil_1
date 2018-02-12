@@ -31,7 +31,7 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
  13 .debug_line   0001f0cf  00000000  00000000  000cebaa  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_str    0009fc64  00000000  00000000  000edc79  2**0
+ 14 .debug_str    0009fc66  00000000  00000000  000edc79  2**0
                   CONTENTS, READONLY, DEBUGGING
  15 .debug_frame  00003484  00000000  00000000  0018d8e0  2**2
                   CONTENTS, READONLY, DEBUGGING
@@ -15421,7 +15421,7 @@ static void audio_sync_reached_callback(void)
     5914:	00100002 	.word	0x00100002
     5918:	00110002 	.word	0x00110002
     591c:	00120002 	.word	0x00120002
-    5920:	003d0900 	.word	0x003d0900
+    5920:	00b71b00 	.word	0x00b71b00
     5924:	200005f4 	.word	0x200005f4
     5928:	42000c00 	.word	0x42000c00
     592c:	00007569 	.word	0x00007569
@@ -22780,7 +22780,7 @@ void sd_mmc_spi_select_device(uint8_t slot, uint32_t clock, uint8_t bus_width,
     8130:	bdf8      	pop	{r3, r4, r5, r6, r7, pc}
     8132:	46c0      	nop			; (mov r8, r8)
     8134:	20000313 	.word	0x20000313
-    8138:	003d0900 	.word	0x003d0900
+    8138:	00b71b00 	.word	0x00b71b00
     813c:	20000300 	.word	0x20000300
     8140:	000074e5 	.word	0x000074e5
     8144:	20000310 	.word	0x20000310
