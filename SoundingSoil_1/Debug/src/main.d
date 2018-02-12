@@ -109,6 +109,8 @@ src/main.d src/main.o: ../src/main.c ../src/asf.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\alloca.h \
  ../src/ASF/common/utils/interrupt.h \
  ../src/ASF/common/utils/interrupt/interrupt_sam_nvic.h \
+ ../src/ASF/sam0/drivers/dma/dma.h ../src/config/conf_dma.h \
+ ../src/ASF/sam0/drivers/dma/dma_crc.h \
  ../src/ASF/common2/services/delay/delay.h \
  ../src/ASF/common2/services/delay/sam0/cycle_counter.h \
  ../src/ASF/sam0/drivers/system/clock/clock.h \
@@ -401,6 +403,12 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-no
 ../src/ASF/common/utils/interrupt.h:
 
 ../src/ASF/common/utils/interrupt/interrupt_sam_nvic.h:
+
+../src/ASF/sam0/drivers/dma/dma.h:
+
+../src/config/conf_dma.h:
+
+../src/ASF/sam0/drivers/dma/dma_crc.h:
 
 ../src/ASF/common2/services/delay/delay.h:
 

@@ -1,7 +1,7 @@
 /**
  * \file
  *
- * \brief SAM SPI configuration
+ * \brief SAM Direct Memory Access Driver Configuration Header
  *
  * Copyright (C) 2013-2015 Atmel Corporation. All rights reserved.
  *
@@ -43,14 +43,9 @@
 /*
  * Support and FAQ: visit <a href="http://www.atmel.com/design-support/">Atmel Support</a>
  */
+#ifndef CONF_DMA_H_INCLUDED
+#define CONF_DMA_H_INCLUDED
 
+#  define CONF_MAX_USED_CHANNEL_NUM     5
 
-#ifndef CONF_SPI_H_INCLUDED
-#  define CONF_SPI_H_INCLUDED
-
-#  define CONF_SPI_MASTER_ENABLE     true
-#  define CONF_SPI_SLAVE_ENABLE      true
-
-#define CONF_PERIPHERAL_TRIGGER_RX	SERCOM1_DMAC_ID_RX
-#endif /* CONF_SPI_H_INCLUDED */
-
+#endif

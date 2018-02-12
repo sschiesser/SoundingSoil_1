@@ -56,6 +56,10 @@
 #include <compiler.h>
 #include <status_codes.h>
 
+// From module: DMAC - Direct Memory Access Controller
+#include <dma.h>
+#include <dma_crc.h>
+
 // From module: Delay routines
 #include <delay.h>
 

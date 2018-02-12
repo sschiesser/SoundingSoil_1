@@ -49,6 +49,7 @@
 #include "ui.h"
 #include "audio_in.h"
 #include "conf_audio.h"
+#include "conf_spi.h"
 #include "sd_management.h"
 
 static volatile bool main_b_msc_enable = false;
@@ -62,6 +63,16 @@ struct tcc_module audio_syncer_module;
 struct rtc_module rtc_instance;
 //! Structure for UART module connected to CDC
 struct usart_module cdc_uart_module;
+
+/********  DMA TEST ********/
+#define BUF_LENGTH 2
+//! Structure for DMA resource
+struct dma_resource dma_resource_rx;
+static volatile bool transfer_rx_done = false;
+COMPILER_ALIGNED(16)
+DmacDescriptor dma_descriptor_rx SECTION_DMAC_DESCRIPTOR;
+uint8_t buffer_rx[BUF_LENGTH];
+/********  DMA TEST ********/
 
 //! Flags for recording, monitoring & syncing states
 volatile bool rec_start_request = false;
@@ -80,9 +91,38 @@ uint8_t audio_buffer[2][AUDIO_CHUNK_SIZE];
 volatile uint32_t audio_frame_cnt = 0;
 static uint32_t audio_total_samples = 0;
 
-
 FATFS file_sys;
 FIL file_object;
+
+
+/********  DMA TEST ********/
+static void dma_transfer_rx_callback(struct dma_resource* const resource)
+{
+	transfer_rx_done = true;
+}
+
+static void configure_dma_resource_rx(struct dma_resource *rx_resource)
+{
+	struct dma_resource_config rx_config;
+	dma_get_config_defaults(&rx_config);
+	rx_config.peripheral_trigger = CONF_PERIPHERAL_TRIGGER_RX;
+	rx_config.trigger_action = DMA_TRIGGER_ACTION_BEAT;
+	dma_allocate(rx_resource, &rx_config);
+}
+
+static void setup_transfer_descriptor_rx(DmacDescriptor *rx_descriptor)
+{
+	struct dma_descriptor_config rx_descriptor_config;
+	dma_descriptor_get_config_defaults(&rx_descriptor_config);
+	rx_descriptor_config.beat_size = DMA_BEAT_SIZE_BYTE;
+	rx_descriptor_config.src_increment_enable = false;
+	rx_descriptor_config.block_transfer_count = sizeof(buffer_rx)/sizeof(uint8_t);
+	rx_descriptor_config.source_address = (uint32_t)(&adc_spi_module.hw->SPI.DATA.reg);
+	rx_descriptor_config.destination_address = (uint32_t)buffer_rx + sizeof(buffer_rx);
+	dma_descriptor_create(rx_descriptor, &rx_descriptor_config);
+}
+/********  DMA TEST ********/
+
 
 static void calendar_init(void)
 {
@@ -267,7 +307,6 @@ bool audio_write_1samp(bool ub)
 	return true;
 }
 
-
 bool audio_write_chunck(bool ub)
 {
 	FRESULT res;
@@ -330,12 +369,19 @@ int main(void)
 	memories_initialization();
 	
 	audio_in_init();
-	audio_sync_init();
+/********  DMA TEST ********/
+	configure_dma_resource_rx(&dma_resource_rx);
+	setup_transfer_descriptor_rx(&dma_descriptor_rx);
+	dma_add_descriptor(&dma_resource_rx, &dma_descriptor_rx);
+	dma_register_callback(&dma_resource_rx, dma_transfer_rx_callback, DMA_CALLBACK_TRANSFER_DONE);
+	dma_enable_callback(&dma_resource_rx, DMA_CALLBACK_TRANSFER_DONE);
+/********  DMA TEST ********/	
+	//audio_sync_init();
 	
 	system_interrupt_enable_global();
 	
 	// Start USB stack to authorize VBus monitoring
-	udc_start();
+	//udc_start();
 	
 	/* The main loop manages only the power mode
 	 * because the USB management & button detection
@@ -360,26 +406,43 @@ int main(void)
 		if(rec_init_done) {
 			port_pin_toggle_output_level(PIN_PB12);
 			LED_On(UI_LED_REC);
+			//dma_start_transfer_job(&dma_resource_rx);
 			audio_frame_cnt = 0;
 			rec_init_done = false;
 			rec_running = true;
 		}
 		
-		if(sync_reached) {
-			sync_reached = false;
-			if(rec_running) {
-				port_pin_toggle_output_level(PIN_PB12);
-				audio_record_1samp(audio_upper_buffer);
-				//audio_write_1samp(audio_upper_buffer);
-				audio_frame_cnt += 2;
-				if(audio_frame_cnt >= AUDIO_CHUNK_SIZE) {
-					audio_total_samples += audio_frame_cnt;
-					audio_frame_cnt = 0;
-					audio_write_chunck(audio_upper_buffer);
-					audio_upper_buffer = (audio_upper_buffer) ? false : true;
-				}
+		if(rec_running) {
+			port_pin_set_output_level(ADC_CONV_PIN, false);
+			spi_select_slave(&adc_spi_module, &adc_spi_slave, true);
+			dma_start_transfer_job(&dma_resource_rx);
+			while(!transfer_rx_done) {
+				
 			}
+			spi_select_slave(&adc_spi_module, &adc_spi_slave, false);
+			port_pin_set_output_level(ADC_CONV_PIN, true);
+			rec_running = false;
 		}
+		//if(sync_reached) {
+			//port_pin_toggle_output_level(PIN_PB12);
+			//sync_reached = false;
+			//if(transfer_rx_done) {
+				//port_pin_toggle_output_level(PIN_PB12);
+				//transfer_rx_done = false;
+			//}
+			//if(rec_running) {
+				//port_pin_toggle_output_level(PIN_PB12);
+				////audio_record_1samp(audio_upper_buffer);
+				////audio_write_1samp(audio_upper_buffer);
+				//audio_frame_cnt += 2;
+				//if(audio_frame_cnt >= AUDIO_CHUNK_SIZE) {
+					//audio_total_samples += audio_frame_cnt;
+					//audio_frame_cnt = 0;
+					//audio_write_chunck(audio_upper_buffer);
+					//audio_upper_buffer = (audio_upper_buffer) ? false : true;
+				//}
+			//}
+		//}
 		
 		//if (main_b_msc_enable) {
 			//if (!udi_msc_process_trans()) {
