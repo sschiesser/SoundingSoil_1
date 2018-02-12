@@ -8,7 +8,7 @@
 #include <asf.h>
 #include "sd_management.h"
 
-extern volatile bool recording_request;
+extern volatile bool rec_start_request;
 
 bool sd_test_availability(void)
 {
@@ -25,7 +25,7 @@ bool sd_test_availability(void)
 		LED_Toggle(UI_LED_REC);
 		LED_Toggle(UI_LED_MON);
 		delay_ms(300);
-		if(!recording_request) {
+		if(!rec_start_request) {
 			retVal = false;
 			break;
 		}

@@ -51,8 +51,9 @@
 
 extern struct usart_module cdc_uart_module;
 
-extern volatile bool recording_running;
-extern volatile bool recording_request;
+extern volatile bool rec_running;
+extern volatile bool rec_start_request;
+extern volatile bool rec_stop_request;
 extern volatile bool monitoring_on;
 
 /**
@@ -117,10 +118,8 @@ void ui_lb_init(void)
 void ui_configure_callback(void)
 {
 	extint_register_callback(ui_button1_callback, UI_BUT_1_EIC_LINE, EXTINT_CALLBACK_TYPE_DETECT);
-	extint_register_callback(ui_button2_callback, UI_BUT_2_EIC_LINE, EXTINT_CALLBACK_TYPE_DETECT);
 	extint_register_callback(ui_button3_callback, UI_BUT_3_EIC_LINE, EXTINT_CALLBACK_TYPE_DETECT);
 	extint_chan_enable_callback(UI_BUT_1_EIC_LINE, EXTINT_CALLBACK_TYPE_DETECT);
-	extint_chan_enable_callback(UI_BUT_2_EIC_LINE, EXTINT_CALLBACK_TYPE_DETECT);
 	extint_chan_enable_callback(UI_BUT_3_EIC_LINE, EXTINT_CALLBACK_TYPE_DETECT);
 }
 
@@ -135,21 +134,17 @@ void ui_button1_callback(void)
 	}
 	
 	if(press_ok) {
-		if(recording_running || recording_request) {
-			LED_Off(UI_LED_REC);
-			recording_request = false;
-			recording_running = false;
+		if(rec_running || rec_start_request) {
+			rec_start_request = false;
+			rec_running = false;
+			rec_stop_request = true;
 		}
 		else {
-			//tcc_restart_counter(&audio_syncer_module);
-			recording_request = true;
+			rec_start_request = true;
 		}
 	}
 }
 
-void ui_button2_callback(void)
-{
-}
 
 void ui_button3_callback(void)
 {

@@ -49,7 +49,6 @@
 #include "ui.h"
 #include "audio_in.h"
 #include "conf_audio.h"
-#include "recorder.h"
 #include "sd_management.h"
 
 static volatile bool main_b_msc_enable = false;
@@ -65,18 +64,21 @@ struct rtc_module rtc_instance;
 struct usart_module cdc_uart_module;
 
 //! Flags for recording, monitoring & syncing states
-volatile bool recording_request = false;
-volatile bool recording_ready = false;
-volatile bool recording_running = false;
+volatile bool rec_start_request = false;
+volatile bool rec_stop_request = false;
+volatile bool rec_init_done = false;
+volatile bool rec_running = false;
 volatile bool monitoring_on = false;
-volatile bool syncing_reached = false;
+volatile bool sync_reached = false;
+volatile bool chunk_full = false;
 volatile bool audio_upper_buffer = false;
 
 //! Double array for reading ADC values
-uint16_t audio_buffer[2][882];
+uint8_t audio_buffer[2][AUDIO_CHUNK_SIZE];
 
 //! Audio frame counter for writing chuncks
 volatile uint32_t audio_frame_cnt = 0;
+static uint32_t audio_total_samples = 0;
 
 
 FATFS file_sys;
@@ -100,7 +102,6 @@ static void calendar_init(void)
 	rtc_calendar_set_time(&rtc_instance, &current_time);
 	rtc_calendar_swap_time_mode(&rtc_instance);
 }
-
 
 static void generate_file_name(char *fn) {
 	struct rtc_calendar_time current_time;
@@ -166,10 +167,11 @@ void audio_in_init(void)
 
 bool audio_record_init(void) {
 	FRESULT res;
-	char *file_name;
+	//char file_name[18] = "180213_111445.wav";
+	char file_name[] = "180212_140925.wav";
 	uint32_t bytes;
 	
-	generate_file_name((char *)&file_name);
+	//generate_file_name(file_name);
 	//printf("Generated file name: %s\n\r", &file_name);
 	
 	/* Mount file system */
@@ -180,7 +182,7 @@ bool audio_record_init(void) {
 	}
 	
 	/* Open/create file */
-	res = f_open(&file_object, (char const *)&file_name, FA_CREATE_ALWAYS | FA_WRITE);
+	res = f_open(&file_object, file_name, FA_CREATE_ALWAYS | FA_WRITE);
 	if(res != FR_OK) {
 		printf("Error while opening file: #%d\n\r", res);
 		return false;
@@ -194,12 +196,36 @@ bool audio_record_init(void) {
 		return false;
 	}
 	
-	/* Start sync counter & recording */
-	//audio_frame_cnt = 0;
-	//audio_record_1samp(false);
-	//tcc_restart_counter(&audio_syncer_module);
 	return true;
 }
+
+bool audio_record_close(void)
+{
+	FRESULT res;
+	UINT bytes;
+	bool retVal = true;
+	
+	((uint16_t *)&wave_header)[WAVE_FORMAT_NUM_CHANNEL_OFFSET/2] = AUDIO_NUM_CHANNELS;
+	((uint16_t *)&wave_header)[WAVE_FORMAT_BITS_PER_SAMPLE_OFFSET/2] = AUDIO_BITS_PER_SAMPLE;
+	((uint16_t *)&wave_header)[WAVE_FORMAT_BLOCK_ALIGN_OFFSET/2] = AUDIO_BITS_PER_SAMPLE/8 * AUDIO_NUM_CHANNELS;
+	((uint32_t *)&wave_header)[WAVE_FORMAT_SAMPLE_RATE_OFFSET/4] = AUDIO_SAMPLING_RATE;
+	((uint32_t *)&wave_header)[WAVE_FORMAT_BYTE_RATE_OFFSET/4] = AUDIO_SAMPLING_RATE * AUDIO_NUM_CHANNELS * AUDIO_BITS_PER_SAMPLE/8;
+	((uint32_t *)&wave_header)[WAVE_FORMAT_SUBCHUNK2_SIZE_OFFSET/4] = audio_total_samples * AUDIO_BITS_PER_SAMPLE/8;
+	((uint32_t *)&wave_header)[WAVE_FORMAT_CHUNK_SIZE_OFFSET/4] = (audio_total_samples * AUDIO_BITS_PER_SAMPLE/8) + 36;
+	
+	f_lseek(&file_object, 0);
+	res = f_write(&file_object, wave_header, 44, &bytes);
+	if(res != FR_OK) {
+		retVal = false;
+	}
+	
+	f_close(&file_object);
+	audio_total_samples = 0;
+	LED_Off(UI_LED_REC);
+	
+	return retVal;
+}
+
 
 void audio_record_1samp(bool ub) {
 	uint8_t adc_vals[2];
@@ -207,18 +233,46 @@ void audio_record_1samp(bool ub) {
 	spi_read_buffer_wait(&adc_spi_module, adc_vals, 2, 0xFF);
 	port_pin_set_output_level(ADC_CONV_PIN, true);
 	if(ub) {
-		audio_buffer[1][audio_frame_cnt] = ((uint16_t)adc_vals[0] << 8) || (adc_vals[1]);
+		audio_buffer[1][0] = 0x56;
+		audio_buffer[1][1] = 0x78;
+		//audio_buffer[1][0] = adc_vals[0];
+		//audio_buffer[1][1] = adc_vals[1];
 	}
 	else {
-		audio_buffer[0][audio_frame_cnt] = ((uint16_t)adc_vals[0] << 8) || (adc_vals[1]);
+		audio_buffer[0][0] = 0x12;
+		audio_buffer[0][1] = 0x34;
+		//audio_buffer[0][0] =  adc_vals[0];
+		//audio_buffer[0][1] = adc_vals[1];
 	}
 }
+
+bool audio_write_1samp(bool ub)
+{
+	FRESULT res;
+	uint32_t bytes;
+	res = f_write(&file_object, audio_buffer[ub], 2, (UINT *)&bytes);
+	//uint16_t buf[1] = {0xa5a5};
+	//res = f_write(&file_object, buf, 2, (UINT *)&bytes);
+	if(res != FR_OK) {
+		f_close(&file_object);
+		return false;
+	}
+	//else {
+		//res = f_sync(&file_object);
+		//if(res != FR_OK) {
+			//f_close(&file_object);
+			//return false;
+		//}
+	//}
+	return true;
+}
+
 
 bool audio_write_chunck(bool ub)
 {
 	FRESULT res;
-	uint32_t bytes;
-	res = f_write(&file_object, audio_buffer[ub], 882, (UINT *)&bytes);
+	UINT bytes;
+	res = f_write(&file_object, (char *)audio_buffer[ub], AUDIO_CHUNK_SIZE, &bytes);
 	if(res != FR_OK) {
 		f_close(&file_object);
 		return false;
@@ -235,23 +289,22 @@ bool audio_write_chunck(bool ub)
 
 static void audio_sync_reached_callback(void)
 {
-	syncing_reached = true;
+	sync_reached = true;
 }
 
 void audio_sync_init(void)
 {
 	struct tcc_config config_tcc;
 	tcc_get_config_defaults(&config_tcc, TCC0);
+	config_tcc.counter.clock_source = GCLK_GENERATOR_0;
+	config_tcc.counter.clock_prescaler = TCC_CLOCK_PRESCALER_DIV1;
 	config_tcc.counter.period = AUDIO_SYNC_44_1KHZ_CNT;
-	config_tcc.compare.match[0] = AUDIO_SYNC_CONV_CNT;
 	tcc_init(&audio_syncer_module, TCC0, &config_tcc);
 	tcc_enable(&audio_syncer_module);
-	tcc_stop_counter(&audio_syncer_module);
+	//tcc_stop_counter(&audio_syncer_module);
 	
 	tcc_register_callback(&audio_syncer_module, (tcc_callback_t)audio_sync_reached_callback, TCC_CALLBACK_OVERFLOW);
-	tcc_register_callback(&audio_syncer_module, (tcc_callback_t)audio_sync_reached_callback, TCC_CALLBACK_CHANNEL_0);
 	tcc_enable_callback(&audio_syncer_module, TCC_CALLBACK_OVERFLOW);
-	tcc_enable_callback(&audio_syncer_module, TCC_CALLBACK_CHANNEL_0);
 }
 /*! \brief Main function. Execution starts here.
  */
@@ -287,50 +340,52 @@ int main(void)
 	/* The main loop manages only the power mode
 	 * because the USB management & button detection
 	 * are done by interrupt */
-	while (true) {
-		if(recording_request) {
+	for(;;) {
+		if(rec_start_request) {
 			/* Testing if SD card is present */
 			if(sd_test_availability()) {
 				if(audio_record_init()) {
-					recording_ready = true;
+					rec_init_done = true;
 				}
-				else {
-					printf("Error while initializing audio recording!!\n\r");
-				}
-				recording_request = false;
+				rec_start_request = false;
 			}
 		}
 		
-		if(recording_ready) {
+		if(rec_stop_request) {
+			if(!audio_record_close()) {
+				printf("ERROR closing recorded file\n\r");
+			}
+		}
+		
+		if(rec_init_done) {
+			port_pin_toggle_output_level(PIN_PB12);
+			LED_On(UI_LED_REC);
 			audio_frame_cnt = 0;
-			audio_record_1samp(false);
-			tcc_restart_counter(&audio_syncer_module);
-			recording_ready = false;
-			recording_running = true;
+			rec_init_done = false;
+			rec_running = true;
 		}
 		
-		if(syncing_reached) {
-			syncing_reached = false;
-			audio_frame_cnt++;
-			if(audio_frame_cnt >= 882) {
+		if(sync_reached) {
+			sync_reached = false;
+			if(rec_running) {
 				port_pin_toggle_output_level(PIN_PB12);
-				audio_frame_cnt = 0;
-				if(!audio_write_chunck(audio_upper_buffer)) {
-					printf("Error writing chunck!\n\r");
-					while(1) {}
+				audio_record_1samp(audio_upper_buffer);
+				//audio_write_1samp(audio_upper_buffer);
+				audio_frame_cnt += 2;
+				if(audio_frame_cnt >= AUDIO_CHUNK_SIZE) {
+					audio_total_samples += audio_frame_cnt;
+					audio_frame_cnt = 0;
+					audio_write_chunck(audio_upper_buffer);
+					audio_upper_buffer = (audio_upper_buffer) ? false : true;
 				}
-				port_pin_toggle_output_level(PIN_PB12);
-				audio_upper_buffer = (audio_upper_buffer) ? false : true;
 			}
-			audio_record_1samp(audio_upper_buffer);
-			//tcc_restart_counter(&audio_syncer_module);
 		}
 		
-		if (main_b_msc_enable) {
-			if (!udi_msc_process_trans()) {
-				//sleepmgr_enter_sleep();
-			}
-		}
+		//if (main_b_msc_enable) {
+			//if (!udi_msc_process_trans()) {
+				////sleepmgr_enter_sleep();
+			//}
+		//}
 		//else {
 			//sleepmgr_enter_sleep();
 		//}
