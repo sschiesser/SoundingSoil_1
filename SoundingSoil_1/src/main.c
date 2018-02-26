@@ -1,48 +1,48 @@
 /**
- * \file
- *
- * \brief Main functions for MSC example
- *
- * Copyright (c) 2009-2015 Atmel Corporation. All rights reserved.
- *
- * \asf_license_start
- *
- * \page License
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * 3. The name of Atmel may not be used to endorse or promote products derived
- *    from this software without specific prior written permission.
- *
- * 4. This software may only be redistributed and used in connection with an
- *    Atmel microcontroller product.
- *
- * THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
- * EXPRESSLY AND SPECIFICALLY DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
- * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
- * \asf_license_stop
- *
- */
+* \file
+*
+* \brief Main functions for MSC example
+*
+* Copyright (c) 2009-2015 Atmel Corporation. All rights reserved.
+*
+* \asf_license_start
+*
+* \page License
+*
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that the following conditions are met:
+*
+* 1. Redistributions of source code must retain the above copyright notice,
+*    this list of conditions and the following disclaimer.
+*
+* 2. Redistributions in binary form must reproduce the above copyright notice,
+*    this list of conditions and the following disclaimer in the documentation
+*    and/or other materials provided with the distribution.
+*
+* 3. The name of Atmel may not be used to endorse or promote products derived
+*    from this software without specific prior written permission.
+*
+* 4. This software may only be redistributed and used in connection with an
+*    Atmel microcontroller product.
+*
+* THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR IMPLIED
+* WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
+* EXPRESSLY AND SPECIFICALLY DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR
+* ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+* OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+* ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+* POSSIBILITY OF SUCH DAMAGE.
+*
+* \asf_license_stop
+*
+*/
 /*
- * Support and FAQ: visit <a href="http://www.atmel.com/design-support/">Atmel Support</a>
- */
+* Support and FAQ: visit <a href="http://www.atmel.com/design-support/">Atmel Support</a>
+*/
 
 #include <asf.h>
 #include "conf_usb.h"
@@ -65,12 +65,16 @@ struct rtc_module rtc_instance;
 struct usart_module cdc_uart_module;
 
 /********  DMA TEST ********/
-#define BUF_LENGTH 2
+#define BUF_LENGTH 20
 //! Structure for DMA resource
+struct dma_resource dma_resource_tx;
 struct dma_resource dma_resource_rx;
+static volatile bool transfer_tx_done = false;
 static volatile bool transfer_rx_done = false;
-COMPILER_ALIGNED(16)
-DmacDescriptor dma_descriptor_rx SECTION_DMAC_DESCRIPTOR;
+static const uint8_t buffer_tx[BUF_LENGTH] = {
+	0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A,
+	0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x13, 0x14,
+};
 uint8_t buffer_rx[BUF_LENGTH];
 /********  DMA TEST ********/
 
@@ -96,18 +100,91 @@ FIL file_object;
 
 
 /********  DMA TEST ********/
+COMPILER_ALIGNED(16)
+DmacDescriptor dma_descriptor_tx SECTION_DMAC_DESCRIPTOR;
+DmacDescriptor dma_descriptor_rx SECTION_DMAC_DESCRIPTOR;
+
+static void configure_spi_master(void)
+{
+	struct spi_config config_spi_master;
+	struct spi_slave_inst_config slave_dev_config;
+	/* Configure and initialize software device instance of peripheral slave */
+	spi_slave_inst_get_config_defaults(&slave_dev_config);
+	slave_dev_config.ss_pin = ADC_SPI_SS_PIN;
+	spi_attach_slave(&adc_spi_slave, &slave_dev_config);
+	/* Configure, initialize and enable SERCOM SPI module */
+	spi_get_config_defaults(&config_spi_master);
+	config_spi_master.mode_specific.master.baudrate = ADC_SPI_BAUDRATE;
+	config_spi_master.mux_setting = ADC_SPI_MUX_SETTING;
+
+	config_spi_master.pinmux_pad0 = ADC_SPI_PINMUX_PAD0;
+	config_spi_master.pinmux_pad1 = ADC_SPI_PINMUX_PAD1;
+	config_spi_master.pinmux_pad2 = ADC_SPI_PINMUX_PAD2;
+	config_spi_master.pinmux_pad3 = ADC_SPI_PINMUX_PAD3;
+
+	spi_init(&adc_spi_module, ADC_SPI_MODULE, &config_spi_master);
+	spi_enable(&adc_spi_module);
+
+}
+
+static void configure_spi_slave(void)
+{
+	struct spi_config config_spi_slave;
+	spi_get_config_defaults(&config_spi_slave);
+	config_spi_slave.mode = SPI_MODE_SLAVE;
+	config_spi_slave.mode_specific.slave.preload_enable = true;
+	config_spi_slave.mode_specific.slave.frame_format = SPI_FRAME_FORMAT_SPI_FRAME;
+	config_spi_slave.mux_setting = ADC_SPI_MUX_SETTING;
+
+	config_spi_slave.pinmux_pad0 = ADC_SPI_PINMUX_PAD0;
+	config_spi_slave.pinmux_pad1 = ADC_SPI_PINMUX_PAD1;
+	config_spi_slave.pinmux_pad2 = ADC_SPI_PINMUX_PAD2;
+	config_spi_slave.pinmux_pad3 = ADC_SPI_PINMUX_PAD3;
+
+	spi_init(&adc_spi_module, ADC_SPI_MODULE, &config_spi_slave);
+	spi_enable(&adc_spi_module);
+
+}
+
+
+static void dma_transfer_tx_callback(struct dma_resource* const resource)
+{
+	transfer_tx_done = true;
+}
+
 static void dma_transfer_rx_callback(struct dma_resource* const resource)
 {
 	transfer_rx_done = true;
+}
+
+static void configure_dma_resource_tx(struct dma_resource *tx_resource)
+{
+	struct dma_resource_config tx_config;
+	dma_get_config_defaults(&tx_config);
+	tx_config.peripheral_trigger = CONF_PERIPHERAL_TRIGGER_TX;
+	tx_config.trigger_action = DMA_TRIGGER_ACTION_BEAT;
+	dma_allocate(tx_resource, &tx_config);
 }
 
 static void configure_dma_resource_rx(struct dma_resource *rx_resource)
 {
 	struct dma_resource_config rx_config;
 	dma_get_config_defaults(&rx_config);
-	rx_config.peripheral_trigger = CONF_PERIPHERAL_TRIGGER_RX;
+	//rx_config.peripheral_trigger = CONF_PERIPHERAL_TRIGGER_RX;
 	rx_config.trigger_action = DMA_TRIGGER_ACTION_BEAT;
 	dma_allocate(rx_resource, &rx_config);
+}
+
+static void setup_transfer_descriptor_tx(DmacDescriptor *tx_descriptor)
+{
+	struct dma_descriptor_config tx_descriptor_config;
+	dma_descriptor_get_config_defaults(&tx_descriptor_config);
+	tx_descriptor_config.beat_size = DMA_BEAT_SIZE_BYTE;
+	tx_descriptor_config.dst_increment_enable = false;
+	tx_descriptor_config.block_transfer_count = sizeof(buffer_tx)/sizeof(uint8_t);
+	tx_descriptor_config.source_address = (uint32_t)buffer_tx + sizeof(buffer_tx);
+	tx_descriptor_config.destination_address = (uint32_t)(&adc_spi_module.hw->SPI.DATA.reg);
+	dma_descriptor_create(tx_descriptor, &tx_descriptor_config);
 }
 
 static void setup_transfer_descriptor_rx(DmacDescriptor *rx_descriptor)
@@ -298,11 +375,11 @@ bool audio_write_1samp(bool ub)
 		return false;
 	}
 	//else {
-		//res = f_sync(&file_object);
-		//if(res != FR_OK) {
-			//f_close(&file_object);
-			//return false;
-		//}
+	//res = f_sync(&file_object);
+	//if(res != FR_OK) {
+	//f_close(&file_object);
+	//return false;
+	//}
 	//}
 	return true;
 }
@@ -346,111 +423,129 @@ void audio_sync_init(void)
 	tcc_enable_callback(&audio_syncer_module, TCC_CALLBACK_OVERFLOW);
 }
 /*! \brief Main function. Execution starts here.
- */
+*/
 int main(void)
 {
 	irq_initialize_vectors();
 
 	// Initialize the sleep manager
-	sleepmgr_init();
+	//sleepmgr_init();
 
 	system_init();
 	
 	delay_init();
 	
-	calendar_init();
+	//calendar_init();
 	
-	ui_lb_init();
-	ui_powerdown();
-	ui_cdc_init();
-	ui_configure_callback();
+	//ui_lb_init();
+	//ui_powerdown();
+	//ui_cdc_init();
+	//ui_configure_callback();
 
-	sd_mmc_init();
-	memories_initialization();
+	//sd_mmc_init();
+	//memories_initialization();
 	
-	audio_in_init();
-/********  DMA TEST ********/
+	//audio_in_init();
+	/********  DMA TEST ********/
+	configure_spi_master();
+	//configure_spi_slave();
+	//configure_dma_resource_tx(&dma_resource_tx);
 	configure_dma_resource_rx(&dma_resource_rx);
+	//setup_transfer_descriptor_tx(&dma_descriptor_tx);
 	setup_transfer_descriptor_rx(&dma_descriptor_rx);
+	//dma_add_descriptor(&dma_resource_tx, &dma_descriptor_tx);
 	dma_add_descriptor(&dma_resource_rx, &dma_descriptor_rx);
+	//dma_register_callback(&dma_resource_tx, dma_transfer_tx_callback, DMA_CALLBACK_TRANSFER_DONE);
 	dma_register_callback(&dma_resource_rx, dma_transfer_rx_callback, DMA_CALLBACK_TRANSFER_DONE);
+	//dma_enable_callback(&dma_resource_tx, DMA_CALLBACK_TRANSFER_DONE);
 	dma_enable_callback(&dma_resource_rx, DMA_CALLBACK_TRANSFER_DONE);
-/********  DMA TEST ********/	
+	
+	while(1) {
+		spi_select_slave(&adc_spi_module, &adc_spi_slave, true);
+		//dma_start_transfer_job(&dma_resource_tx);
+		dma_start_transfer_job(&dma_resource_rx);
+		while(!transfer_rx_done) {
+		}
+		spi_select_slave(&adc_spi_module, &adc_spi_slave, false);
+		transfer_tx_done = false;
+		delay_us(2000);
+	}
+	/********  DMA TEST ********/
 	//audio_sync_init();
 	
-	system_interrupt_enable_global();
+	//system_interrupt_enable_global();
 	
 	// Start USB stack to authorize VBus monitoring
 	//udc_start();
 	
 	/* The main loop manages only the power mode
-	 * because the USB management & button detection
-	 * are done by interrupt */
+	* because the USB management & button detection
+	* are done by interrupt */
 	for(;;) {
-		if(rec_start_request) {
-			/* Testing if SD card is present */
-			if(sd_test_availability()) {
-				if(audio_record_init()) {
-					rec_init_done = true;
-				}
-				rec_start_request = false;
-			}
-		}
-		
-		if(rec_stop_request) {
-			if(!audio_record_close()) {
-				printf("ERROR closing recorded file\n\r");
-			}
-		}
-		
-		if(rec_init_done) {
-			port_pin_toggle_output_level(PIN_PB12);
-			LED_On(UI_LED_REC);
-			//dma_start_transfer_job(&dma_resource_rx);
-			audio_frame_cnt = 0;
-			rec_init_done = false;
-			rec_running = true;
-		}
-		
-		if(rec_running) {
-			port_pin_set_output_level(ADC_CONV_PIN, false);
-			spi_select_slave(&adc_spi_module, &adc_spi_slave, true);
-			dma_start_transfer_job(&dma_resource_rx);
-			while(!transfer_rx_done) {
-				
-			}
-			spi_select_slave(&adc_spi_module, &adc_spi_slave, false);
-			port_pin_set_output_level(ADC_CONV_PIN, true);
-			rec_running = false;
-		}
+		//if(rec_start_request) {
+		///* Testing if SD card is present */
+		//if(sd_test_availability()) {
+		//if(audio_record_init()) {
+		//rec_init_done = true;
+		//}
+		//rec_start_request = false;
+		//}
+		//}
+		//
+		//if(rec_stop_request) {
+		//if(!audio_record_close()) {
+		//printf("ERROR closing recorded file\n\r");
+		//}
+		//}
+		//
+		//if(rec_init_done) {
+		//port_pin_toggle_output_level(PIN_PB12);
+		//LED_On(UI_LED_REC);
+		////dma_start_transfer_job(&dma_resource_rx);
+		//audio_frame_cnt = 0;
+		//rec_init_done = false;
+		//rec_running = true;
+		//}
+		//
+		//if(rec_running) {
+		//port_pin_set_output_level(ADC_CONV_PIN, false);
+		//spi_select_slave(&adc_spi_module, &adc_spi_slave, true);
+		//dma_start_transfer_job(&dma_resource_rx);
+		//while(!transfer_rx_done) {
+		//
+		//}
+		//spi_select_slave(&adc_spi_module, &adc_spi_slave, false);
+		//port_pin_set_output_level(ADC_CONV_PIN, true);
+		//rec_running = false;
+		//}
 		//if(sync_reached) {
-			//port_pin_toggle_output_level(PIN_PB12);
-			//sync_reached = false;
-			//if(transfer_rx_done) {
-				//port_pin_toggle_output_level(PIN_PB12);
-				//transfer_rx_done = false;
-			//}
-			//if(rec_running) {
-				//port_pin_toggle_output_level(PIN_PB12);
-				////audio_record_1samp(audio_upper_buffer);
-				////audio_write_1samp(audio_upper_buffer);
-				//audio_frame_cnt += 2;
-				//if(audio_frame_cnt >= AUDIO_CHUNK_SIZE) {
-					//audio_total_samples += audio_frame_cnt;
-					//audio_frame_cnt = 0;
-					//audio_write_chunck(audio_upper_buffer);
-					//audio_upper_buffer = (audio_upper_buffer) ? false : true;
-				//}
-			//}
+		//port_pin_toggle_output_level(PIN_PB12);
+		//sync_reached = false;
+		//if(transfer_rx_done) {
+		//port_pin_toggle_output_level(PIN_PB12);
+		//transfer_rx_done = false;
+		//}
+		//if(rec_running) {
+		//port_pin_toggle_output_level(PIN_PB12);
+		////audio_record_1samp(audio_upper_buffer);
+		////audio_write_1samp(audio_upper_buffer);
+		//audio_frame_cnt += 2;
+		//if(audio_frame_cnt >= AUDIO_CHUNK_SIZE) {
+		//audio_total_samples += audio_frame_cnt;
+		//audio_frame_cnt = 0;
+		//audio_write_chunck(audio_upper_buffer);
+		//audio_upper_buffer = (audio_upper_buffer) ? false : true;
+		//}
+		//}
 		//}
 		
 		//if (main_b_msc_enable) {
-			//if (!udi_msc_process_trans()) {
-				////sleepmgr_enter_sleep();
-			//}
+		//if (!udi_msc_process_trans()) {
+		////sleepmgr_enter_sleep();
+		//}
 		//}
 		//else {
-			//sleepmgr_enter_sleep();
+		//sleepmgr_enter_sleep();
 		//}
 	}
 }
@@ -468,7 +563,7 @@ void main_resume_action(void)
 void main_sof_action(void)
 {
 	if (!main_b_msc_enable)
-		return;
+	return;
 	ui_process(udd_get_frame_number());
 }
 
@@ -484,41 +579,41 @@ void main_msc_disable(void)
 }
 
 /**
- * \mainpage ASF USB Device MSC
- *
- * \section intro Introduction
- * This example shows how to implement a USB Device Mass Storage
- * on Atmel MCU with USB module.
- *
- * \section startup Startup
- * The example uses all memories available on the board and connects these to
- * USB Device Mass Storage stack. After loading firmware, connect the board
- * (EVKxx,Xplain,...) to the USB Host. When connected to a USB host system
- * this application allows to display all available memories as a
- * removable disks in the Unix/Mac/Windows operating systems.
- * \note
- * This example uses the native MSC driver on Unix/Mac/Windows OS, except for Win98.
- *
- * \copydoc UI
- *
- * \section example About example
- *
- * The example uses the following module groups:
- * - Basic modules:
- *   Startup, board, clock, interrupt, power management
- * - USB Device stack and MSC modules:
- *   <br>services/usb/
- *   <br>services/usb/udc/
- *   <br>services/usb/class/msc/
- * - Specific implementation:
- *    - main.c,
- *      <br>initializes clock
- *      <br>initializes interrupt
- *      <br>manages UI
- *    - specific implementation for each target "./examples/product_board/":
- *       - conf_foo.h   configuration of each module
- *       - ui.c        implement of user's interface (leds)
- *
- * <SUP>1</SUP> The memory data transfers are done outside USB interrupt routine.
- * This is done in the MSC process ("udi_msc_process_trans()") called by main loop.
- */
+* \mainpage ASF USB Device MSC
+*
+* \section intro Introduction
+* This example shows how to implement a USB Device Mass Storage
+* on Atmel MCU with USB module.
+*
+* \section startup Startup
+* The example uses all memories available on the board and connects these to
+* USB Device Mass Storage stack. After loading firmware, connect the board
+* (EVKxx,Xplain,...) to the USB Host. When connected to a USB host system
+* this application allows to display all available memories as a
+* removable disks in the Unix/Mac/Windows operating systems.
+* \note
+* This example uses the native MSC driver on Unix/Mac/Windows OS, except for Win98.
+*
+* \copydoc UI
+*
+* \section example About example
+*
+* The example uses the following module groups:
+* - Basic modules:
+*   Startup, board, clock, interrupt, power management
+* - USB Device stack and MSC modules:
+*   <br>services/usb/
+*   <br>services/usb/udc/
+*   <br>services/usb/class/msc/
+* - Specific implementation:
+*    - main.c,
+*      <br>initializes clock
+*      <br>initializes interrupt
+*      <br>manages UI
+*    - specific implementation for each target "./examples/product_board/":
+*       - conf_foo.h   configuration of each module
+*       - ui.c        implement of user's interface (leds)
+*
+* <SUP>1</SUP> The memory data transfers are done outside USB interrupt routine.
+* This is done in the MSC process ("udi_msc_process_trans()") called by main loop.
+*/
