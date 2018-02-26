@@ -203,7 +203,7 @@ bool audio_record_close(void)
 {
 	FRESULT res;
 	UINT bytes;
-	bool retVal = true;
+	volatile bool retVal = true;
 	
 	((uint16_t *)&wave_header)[WAVE_FORMAT_NUM_CHANNEL_OFFSET/2] = AUDIO_NUM_CHANNELS;
 	((uint16_t *)&wave_header)[WAVE_FORMAT_BITS_PER_SAMPLE_OFFSET/2] = AUDIO_BITS_PER_SAMPLE;
@@ -352,6 +352,7 @@ int main(void)
 		}
 		
 		if(rec_stop_request) {
+			rec_stop_request = false;
 			if(!audio_record_close()) {
 				printf("ERROR closing recorded file\n\r");
 			}
