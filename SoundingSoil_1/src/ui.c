@@ -93,7 +93,7 @@ void ui_lb_init(void)
 	port_pin_set_output_level(UI_LED_3_PIN, UI_LED_3_INACTIVE);
 	
 	/* Configure supplementary port for debugging purposes */
-	port_pin_set_config(PIN_PB12, &pin_conf);
+	port_pin_set_config(UI_DGB_PIN, &pin_conf);
 	
 	/* Configure buttons as external interrupts */
 	struct extint_chan_conf config_extint_chan;

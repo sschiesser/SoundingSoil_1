@@ -101,11 +101,9 @@
 #include <sercom.h>
 #include <sercom_interrupt.h>
 
-// From module: SERCOM Polled API
-#include <sercom.h>
-
-// From module: SERCOM SPI - Serial Peripheral Interface (Polled APIs)
+// From module: SERCOM SPI - Serial Peripheral Interface (Callback APIs)
 #include <spi.h>
+#include <spi_interrupt.h>
 
 // From module: SERCOM USART - Serial Communications (Callback APIs)
 #include <usart.h>

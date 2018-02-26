@@ -9,8 +9,8 @@
 #ifndef CONF_AUDIO_H_
 #define CONF_AUDIO_H_
 
-//#define AUDIO_SYNC_44_1KHZ_CNT			1065
-#define AUDIO_SYNC_44_1KHZ_CNT				3000
+#define AUDIO_SYNC_44_1KHZ_CNT			1065
+//#define AUDIO_SYNC_44_1KHZ_CNT				3000
 #define AUDIO_SYNC_48KHZ_CNT				980
 
 
@@ -48,7 +48,8 @@ COMPILER_WORD_ALIGNED int8_t wave_header[44]= {
 	0x00, 0x00, 0x00, 0x00,  /* subchunk2 size - total size of samples */
 };
 
-#define AUDIO_CHUNK_SIZE					512
+#define AUDIO_CHUNK_SIZE					2048
+#define AUDIO_BUFFER_NUMBER					4
 
 #define WAVE_FORMAT_CHUNK_SIZE_OFFSET		04
 #define WAVE_FORMAT_NUM_CHANNEL_OFFSET		22

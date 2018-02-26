@@ -71,10 +71,10 @@ volatile bool rec_running = false;
 volatile bool monitoring_on = false;
 volatile bool sync_reached = false;
 volatile bool chunk_full = false;
-volatile bool audio_upper_buffer = false;
+volatile uint8_t audio_buffer_counter = 0;
 
 //! Double array for reading ADC values
-uint8_t audio_buffer[2][AUDIO_CHUNK_SIZE];
+uint8_t audio_buffer[AUDIO_BUFFER_NUMBER][AUDIO_CHUNK_SIZE];
 
 //! Audio frame counter for writing chuncks
 volatile uint32_t audio_frame_cnt = 0;
@@ -359,7 +359,7 @@ int main(void)
 		}
 		
 		if(rec_init_done) {
-			port_pin_toggle_output_level(PIN_PB12);
+			port_pin_toggle_output_level(UI_DGB_PIN);
 			LED_On(UI_LED_REC);
 			audio_frame_cnt = 0;
 			rec_init_done = false;
@@ -369,15 +369,15 @@ int main(void)
 		if(sync_reached) {
 			sync_reached = false;
 			if(rec_running) {
-				port_pin_toggle_output_level(PIN_PB12);
-				audio_record_1samp(audio_upper_buffer);
-				//audio_write_1samp(audio_upper_buffer);
+				port_pin_toggle_output_level(UI_DGB_PIN);
+				audio_record_1samp(audio_buffer_counter);
 				audio_frame_cnt += 2;
 				if(audio_frame_cnt >= AUDIO_CHUNK_SIZE) {
 					audio_total_samples += audio_frame_cnt;
 					audio_frame_cnt = 0;
-					audio_write_chunck(audio_upper_buffer);
-					audio_upper_buffer = (audio_upper_buffer) ? false : true;
+					audio_write_chunck(audio_buffer_counter);
+					//printf("Current buffer: %d\n\r", audio_buffer_counter);
+					audio_buffer_counter = (audio_buffer_counter >= AUDIO_BUFFER_NUMBER) ? 0 : (audio_buffer_counter + 1);
 				}
 			}
 		}
