@@ -227,52 +227,48 @@ bool audio_record_close(void)
 }
 
 
-void audio_record_1samp(bool ub) {
+void audio_record_1samp(uint8_t buf) {
 	uint8_t adc_vals[2];
 	port_pin_set_output_level(ADC_CONV_PIN, false);
 	spi_read_buffer_wait(&adc_spi_module, adc_vals, 2, 0xFF);
 	port_pin_set_output_level(ADC_CONV_PIN, true);
-	if(ub) {
-		audio_buffer[1][0] = 0x56;
-		audio_buffer[1][1] = 0x78;
-		//audio_buffer[1][0] = adc_vals[0];
-		//audio_buffer[1][1] = adc_vals[1];
-	}
-	else {
-		audio_buffer[0][0] = 0x12;
-		audio_buffer[0][1] = 0x34;
-		//audio_buffer[0][0] =  adc_vals[0];
-		//audio_buffer[0][1] = adc_vals[1];
+	if(buf < AUDIO_BUFFER_NUMBER) {
+		//audio_buffer[buf][audio_frame_cnt] = 0x56;
+		//audio_buffer[buf][audio_frame_cnt+1] = 0x78;
+		audio_buffer[buf][audio_frame_cnt] = adc_vals[0];
+		audio_buffer[buf][audio_frame_cnt+1] = adc_vals[1];
+		printf("Recorded: 0x%02x %02x\n\r", audio_buffer[buf][audio_frame_cnt], audio_buffer[buf][audio_frame_cnt+1]);
 	}
 }
 
-bool audio_write_1samp(bool ub)
-{
-	FRESULT res;
-	uint32_t bytes;
-	res = f_write(&file_object, audio_buffer[ub], 2, (UINT *)&bytes);
-	//uint16_t buf[1] = {0xa5a5};
-	//res = f_write(&file_object, buf, 2, (UINT *)&bytes);
-	if(res != FR_OK) {
-		f_close(&file_object);
-		return false;
-	}
-	//else {
-		//res = f_sync(&file_object);
-		//if(res != FR_OK) {
-			//f_close(&file_object);
-			//return false;
-		//}
+//bool audio_write_1samp(bool ub)
+//{
+	//FRESULT res;
+	//uint32_t bytes;
+	//res = f_write(&file_object, audio_buffer[ub], 2, (UINT *)&bytes);
+	////uint16_t buf[1] = {0xa5a5};
+	////res = f_write(&file_object, buf, 2, (UINT *)&bytes);
+	//if(res != FR_OK) {
+		//f_close(&file_object);
+		//return false;
 	//}
-	return true;
-}
+	////else {
+		////res = f_sync(&file_object);
+		////if(res != FR_OK) {
+			////f_close(&file_object);
+			////return false;
+		////}
+	////}
+	//return true;
+//}
 
 
-bool audio_write_chunck(bool ub)
+bool audio_write_chunk(uint8_t buf)
 {
 	FRESULT res;
 	UINT bytes;
-	res = f_write(&file_object, (char *)audio_buffer[ub], AUDIO_CHUNK_SIZE, &bytes);
+	//printf("Writing chunk: \n\r");
+	res = f_write(&file_object, (char *)audio_buffer[buf], AUDIO_CHUNK_SIZE, &bytes);
 	if(res != FR_OK) {
 		f_close(&file_object);
 		return false;
@@ -297,14 +293,14 @@ void audio_sync_init(void)
 	struct tcc_config config_tcc;
 	tcc_get_config_defaults(&config_tcc, TCC0);
 	config_tcc.counter.clock_source = GCLK_GENERATOR_0;
-	config_tcc.counter.clock_prescaler = TCC_CLOCK_PRESCALER_DIV1;
+	config_tcc.counter.clock_prescaler = TCC_CLOCK_PRESCALER_DIV64;
 	config_tcc.counter.period = AUDIO_SYNC_44_1KHZ_CNT;
 	tcc_init(&audio_syncer_module, TCC0, &config_tcc);
 	tcc_enable(&audio_syncer_module);
-	//tcc_stop_counter(&audio_syncer_module);
+	tcc_stop_counter(&audio_syncer_module);
 	
 	tcc_register_callback(&audio_syncer_module, (tcc_callback_t)audio_sync_reached_callback, TCC_CALLBACK_OVERFLOW);
-	tcc_enable_callback(&audio_syncer_module, TCC_CALLBACK_OVERFLOW);
+	//tcc_enable_callback(&audio_syncer_module, TCC_CALLBACK_OVERFLOW);
 }
 /*! \brief Main function. Execution starts here.
  */
@@ -359,23 +355,28 @@ int main(void)
 		}
 		
 		if(rec_init_done) {
-			port_pin_toggle_output_level(UI_DGB_PIN);
+			port_pin_toggle_output_level(UI_DBG_PIN);
 			LED_On(UI_LED_REC);
 			audio_frame_cnt = 0;
 			rec_init_done = false;
+			sync_reached = false;
+			audio_frame_cnt = 0;
+			audio_total_samples = 0;
 			rec_running = true;
+			tcc_enable_callback(&audio_syncer_module, TCC_CALLBACK_OVERFLOW);
+			tcc_restart_counter(&audio_syncer_module);
 		}
 		
 		if(sync_reached) {
 			sync_reached = false;
 			if(rec_running) {
-				port_pin_toggle_output_level(UI_DGB_PIN);
+				port_pin_toggle_output_level(UI_DBG_PIN);
 				audio_record_1samp(audio_buffer_counter);
 				audio_frame_cnt += 2;
 				if(audio_frame_cnt >= AUDIO_CHUNK_SIZE) {
 					audio_total_samples += audio_frame_cnt;
 					audio_frame_cnt = 0;
-					audio_write_chunck(audio_buffer_counter);
+					audio_write_chunk(audio_buffer_counter);
 					//printf("Current buffer: %d\n\r", audio_buffer_counter);
 					audio_buffer_counter = (audio_buffer_counter >= AUDIO_BUFFER_NUMBER) ? 0 : (audio_buffer_counter + 1);
 				}

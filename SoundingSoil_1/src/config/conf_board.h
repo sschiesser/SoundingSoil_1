@@ -52,7 +52,7 @@
 #define UI_BUT_ACTIVE			false
 #define UI_BUT_INACTIVE			!UI_BUT_ACTIVE
 
-#define UI_DGB_PIN				PIN_PA10
+#define UI_DBG_PIN				PIN_PA10
 
 /* LED definitions */
 #define UI_LED_1_NAME			"LED1"
