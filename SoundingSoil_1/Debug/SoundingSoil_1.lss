@@ -22591,7 +22591,7 @@ Ctrl_status sd_mmc_ram_2_mem(uint8_t slot, uint32_t addr, const void *ram)
 {
     7f38:	b510      	push	{r4, lr}
     7f3a:	0014      	movs	r4, r2
-	switch (sd_mmc_init_write_blocks(slot, addr, 1)) {
+ 	switch (sd_mmc_init_write_blocks(slot, addr, 1)) {
     7f3c:	2201      	movs	r2, #1
     7f3e:	4b0c      	ldr	r3, [pc, #48]	; (7f70 <sd_mmc_ram_2_mem+0x38>)
     7f40:	4798      	blx	r3

@@ -335,7 +335,7 @@ Ctrl_status sd_mmc_mem_2_ram_1(uint32_t addr, void *ram)
 
 Ctrl_status sd_mmc_ram_2_mem(uint8_t slot, uint32_t addr, const void *ram)
 {
-	switch (sd_mmc_init_write_blocks(slot, addr, 1)) {
+ 	switch (sd_mmc_init_write_blocks(slot, addr, 1)) {
 	case SD_MMC_OK:
 		break;
 	case SD_MMC_ERR_NO_CARD:
