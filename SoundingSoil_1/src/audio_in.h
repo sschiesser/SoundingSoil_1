@@ -12,7 +12,8 @@
 void audio_in_init(void);
 bool audio_record_init(void);
 bool audio_record_close(void);
-void audio_record_1samp(uint8_t buf);
+void audio_record_1samp_start(uint8_t buf);
+void audio_record_1samp_finish(uint8_t buf);
 //bool audio_write_1samp(bool ub);
 bool audio_write_chunk(uint8_t buf);
 //void audio_sync_reached_callback(void);
