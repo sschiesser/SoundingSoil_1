@@ -148,6 +148,7 @@ static void generate_file_name(char *fn) {
 
 static void adc_spi_callback(struct spi_module *const module)
 {
+	port_pin_set_output_level(ADC_CONV_PIN, true);
 	adc_recorder.rec_done = true;
 }
 
@@ -269,7 +270,7 @@ void audio_record_1samp_start(uint8_t buf) {
 }
 
 void audio_record_1samp_finish(uint8_t buf) {
-	port_pin_set_output_level(ADC_CONV_PIN, true);
+	//port_pin_set_output_level(ADC_CONV_PIN, true);
 	if(buf < AUDIO_BUFFER_NUMBER) {
 		audio_buffer[buf][audio_frame_cnt] = adc_vals[0];
 		audio_buffer[buf][audio_frame_cnt+1] = adc_vals[1];
@@ -302,14 +303,14 @@ bool audio_write_chunk(uint8_t buf)
 {
 	FRESULT res;
 	UINT bytes;
-	printf("Writing chunk... buffer: %d, data:\n\r", buf);
-	for(uint16_t i = 0; i < AUDIO_CHUNK_SIZE; i += 16) {
-		printf("[%d]0x", i);
-		for(uint8_t j = 0; j < 16; j++) {
-			printf("%02x ", audio_buffer[buf][i+j]);
-		}
-		printf("\n\r");
-	}
+	//printf("Writing chunk... buffer: %d, data:\n\r", buf);
+	//for(uint16_t i = 0; i < AUDIO_CHUNK_SIZE; i += 16) {
+		//printf("[%d]0x", i);
+		//for(uint8_t j = 0; j < 16; j++) {
+			//printf("%02x ", audio_buffer[buf][i+j]);
+		//}
+		//printf("\n\r");
+	//}
 	res = f_write(&file_object, (char *)audio_buffer[buf], AUDIO_CHUNK_SIZE, &bytes);
 	if(res != FR_OK) {
 		f_close(&file_object);
@@ -335,7 +336,7 @@ void audio_sync_init(void)
 	struct tcc_config config_tcc;
 	tcc_get_config_defaults(&config_tcc, TCC0);
 	config_tcc.counter.clock_source = GCLK_GENERATOR_0;
-	config_tcc.counter.clock_prescaler = TCC_CLOCK_PRESCALER_DIV16;
+	config_tcc.counter.clock_prescaler = TCC_CLOCK_PRESCALER_DIV1;
 	config_tcc.counter.period = AUDIO_SYNC_44_1KHZ_CNT;
 	tcc_init(&audio_syncer_module, TCC0, &config_tcc);
 	tcc_enable(&audio_syncer_module);
@@ -407,17 +408,20 @@ int main(void)
 			audio_total_samples = 0;
 			audio_buffer_counter = 0;
 			rec_running = true;
+			//port_pin_toggle_output_level(UI_DBG_PIN);
+			audio_record_1samp_start(audio_buffer_counter);
 			tcc_enable_callback(&audio_syncer_module, TCC_CALLBACK_OVERFLOW);
 			tcc_restart_counter(&audio_syncer_module);
 		}
 		
 		if(sync_reached) {
 			sync_reached = false;
-			if(rec_running && adc_recorder.rec_ready) {
-				port_pin_toggle_output_level(UI_DBG_PIN);
-				audio_record_1samp_start(audio_buffer_counter);
-				adc_recorder.rec_started = false;
-			}
+			port_pin_toggle_output_level(UI_DBG_PIN);
+			//if(rec_running && adc_recorder.rec_ready) {
+				//port_pin_toggle_output_level(UI_DBG_PIN);
+				//audio_record_1samp_start(audio_buffer_counter);
+				//adc_recorder.rec_started = false;
+			//}
 			if(rec_running && adc_recorder.rec_done) {
 				adc_recorder.rec_done = false;
 				adc_recorder.rec_ready = true;
@@ -426,10 +430,11 @@ int main(void)
 				if(audio_frame_cnt >= AUDIO_CHUNK_SIZE) {
 					audio_total_samples += audio_frame_cnt;
 					audio_frame_cnt = 0;
-					printf("Writing to buffer# %d\n\r", audio_buffer_counter);
+					//printf("Writing to buffer# %d\n\r", audio_buffer_counter);
 					audio_write_chunk(audio_buffer_counter);
 					audio_buffer_counter = (audio_buffer_counter >= (AUDIO_BUFFER_NUMBER-1)) ? 0 : (audio_buffer_counter + 1);
 				}
+				audio_record_1samp_start(audio_buffer_counter);
 			}
 		}
 		
