@@ -48,7 +48,7 @@ COMPILER_WORD_ALIGNED int8_t wave_header[44]= {
 	0x00, 0x00, 0x00, 0x00,  /* subchunk2 size - total size of samples */
 };
 
-#define AUDIO_CHUNK_SIZE					1024
+#define AUDIO_CHUNK_SIZE					256
 #define AUDIO_BUFFER_NUMBER					4
 
 #define WAVE_FORMAT_CHUNK_SIZE_OFFSET		04

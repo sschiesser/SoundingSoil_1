@@ -60,6 +60,25 @@ extern "C" {
  * @{
  */
 
+/* Flag structure for SPI callback mode (BETA) */
+typedef enum {
+	READ_OK = 0,
+	READ_KO
+} DREAD;
+DREAD read_state;
+typedef enum {
+	WRITE_ADTC_DUMMY,
+	WRITE_OK,
+	WRITE_KO
+} DWRITE;
+DWRITE write_state;
+struct DSTATE {
+	DREAD read_state;
+	DWRITE write_state;
+} spi_cb_state;
+/* Flag structure for SPI callback mode (BETA) */
+
+
 //! Type of return error code
 typedef uint8_t sd_mmc_spi_errno_t;
 

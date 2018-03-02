@@ -101,6 +101,27 @@ static void sd_mmc_spi_start_write_block(void);
 static bool sd_mmc_spi_stop_write_block(void);
 static bool sd_mmc_spi_stop_multiwrite_block(void);
 
+//static volatile bool sd_mmc_spi_read_done = false;
+//static volatile bool sd_mmc_spi_write_done = false;
+
+static void sd_mmc_spi_read_callback(void)
+{
+	//sd_mmc_spi_read_done = true;
+}
+
+static void sd_mmc_spi_write_callback(void)
+{
+	//sd_mmc_spi_write_done = true;
+	switch(spi_cb_state.write_state) {
+		case WRITE_ADTC_DUMMY:
+			sd_mmc_spi_adtc_send_cmd()
+			break;
+		
+		default:
+			break;
+	}
+}
+
 
 /**
  * \brief Calculates the CRC7
@@ -332,6 +353,7 @@ sd_mmc_spi_errno_t sd_mmc_spi_get_errno(void)
 	return sd_mmc_spi_err;
 }
 
+
 void sd_mmc_spi_init(void)
 {
 	sd_mmc_spi_err = SD_MMC_SPI_NO_ERR;
@@ -359,6 +381,11 @@ void sd_mmc_spi_init(void)
 
 	spi_init(&sd_mmc_master, SD_MMC_SPI, &config);
 	spi_enable(&sd_mmc_master);
+	
+	//spi_register_callback(&sd_mmc_master, sd_mmc_spi_read_callback, SPI_CALLBACK_BUFFER_RECEIVED);
+	//spi_register_callback(&sd_mmc_master, sd_mmc_spi_write_callback, SPI_CALLBACK_BUFFER_TRANSMITTED);
+	//spi_enable_callback(&sd_mmc_master, SPI_CALLBACK_BUFFER_RECEIVED);
+	//spi_enable_callback(&sd_mmc_master, SPI_CALLBACK_BUFFER_TRANSMITTED);
 
 	spi_slave_inst_get_config_defaults(&slave_configs[0]);
 	slave_configs[0].ss_pin = ss_pins[0];
@@ -410,6 +437,36 @@ bool sd_mmc_spi_adtc_start(sdmmc_cmd_def_t cmd, uint32_t arg,
 		uint16_t block_size, uint16_t nb_block, bool access_block)
 {
 	uint8_t dummy = 0xFF;
+	//uint8_t cmd_token[6];
+	//uint8_t ncr_timeout;
+	//uint8_t r1; //! R1 response
+	//uint16_t dummy2 = 0xFF;
+
+	UNUSED(access_block);
+	Assert(cmd & SDMMC_RESP_PRESENT); // Always a response in SPI mode
+	sd_mmc_spi_err = SD_MMC_SPI_NO_ERR;
+
+	//// Encode SPI command
+	//cmd_token[0] = SPI_CMD_ENCODE(SDMMC_CMD_GET_INDEX(cmd));
+	//cmd_token[1] = arg >> 24;
+	//cmd_token[2] = arg >> 16;
+	//cmd_token[3] = arg >> 8;
+	//cmd_token[4] = arg;
+	//cmd_token[5] = sd_mmc_spi_crc7(cmd_token, 5);
+
+	// 8 cycles to respect Ncs timing
+	// Note: This byte does not include start bit "0",
+	// thus it is ignored by card.
+	spi_cb_state.write_state = WRITE_ADTC_DUMMY;
+	spi_write_buffer_job(&sd_mmc_master, &dummy, 1);
+	//spi_write_buffer_wait(&sd_mmc_master, &dummy, 1);
+	
+	return true;
+}
+
+bool sd_mmc_spi_adtc_send_cmd(sdmmc_cmd_def_t cmd, uint32_t arg,
+		uint16_t block_size, uint16_t nb_block, bool access_block)
+{
 	uint8_t cmd_token[6];
 	uint8_t ncr_timeout;
 	uint8_t r1; //! R1 response
@@ -427,10 +484,6 @@ bool sd_mmc_spi_adtc_start(sdmmc_cmd_def_t cmd, uint32_t arg,
 	cmd_token[4] = arg;
 	cmd_token[5] = sd_mmc_spi_crc7(cmd_token, 5);
 
-	// 8 cycles to respect Ncs timing
-	// Note: This byte does not include start bit "0",
-	// thus it is ignored by card.
-	spi_write_buffer_wait(&sd_mmc_master, &dummy, 1);
 	// Send command
 	spi_write_buffer_wait(&sd_mmc_master, cmd_token, sizeof(cmd_token));
 
@@ -440,8 +493,7 @@ bool sd_mmc_spi_adtc_start(sdmmc_cmd_def_t cmd, uint32_t arg,
 	// WORKAROUND for no compliance card (Atmel Internal ref. SD13):
 	r1 = 0xFF;
 	// Ignore first byte because Ncr min. = 8 clock cylces
-	spi_read_buffer_wait(&sd_mmc_master, &r1, 1,
-			dummy2);
+	spi_read_buffer_wait(&sd_mmc_master, &r1, 1, dummy2);
 	ncr_timeout = 7;
 	while (1) {
 		spi_read_buffer_wait(&sd_mmc_master, &r1, 1,
